@@ -1,4 +1,4 @@
-# Bảng Đánh Giá Tình Trạng Mãn Kinh - MRS (Menopause Rating Scale)
+# MRS - Thang điểm đánh giá tình trạng Mãn kinh
 
 Ứng dụng web đánh giá tình trạng mãn kinh chuẩn y khoa MRS (Menopause Rating Scale), thiết kế chuyên nghiệp theo biểu mẫu y tế, hoạt động mượt mà trên iPad, máy tính bảng và máy tính để bàn.
 
@@ -19,15 +19,38 @@
 3. **Tính điểm tự động thời gian thực (Real-time Calculation)**:
    - Tự động cộng dồn điểm MRS1, MRS2, MRS3 và Tổng số điểm MRS hiển thị ngay trong ô điểm, tinh gọn đúng chuẩn biểu mẫu.
 
-4. **Lưu trữ lịch sử cục bộ trên iPad (LocalStorage)**:
+4. **Lịch sử lưu trữ logic & Đa năng (iPad LocalStorage)**:
    - Khi bấm **"Hoàn tất đánh giá"**, phiếu đánh giá sẽ được tự động lưu ngay vào bộ nhớ cục bộ trên iPad.
-   - Không cần server, không lo rò rỉ thông tin bệnh nhân.
-   - Lưu trữ danh sách bệnh nhân, ngày khám, chi tiết điểm số từng câu hỏi.
-   - Xem lại, tìm kiếm theo tên hoặc ngày, mở lại phiếu cũ và xuất file `.json` sao lưu.
+   - **Nhận diện bệnh nhân thông minh (`patientKey`)**: Phân biệt chuẩn xác giữa "Tổng số ca đánh giá" (lượt khám) và "Số lượng bệnh nhân" (một bệnh nhân có thể đến khám và đánh giá nhiều lần để theo dõi điều trị).
+   - Hiển thị huy hiệu số lần khám trực quan: `Lần đánh giá 1/3`, `2/3`...
+   - **Tìm kiếm đa tiêu chí thời gian thực**: Tìm kiếm kết hợp theo **Tên bệnh nhân**, **Năm sinh** (4 số) và **Ngày đánh giá**.
 
-5. **In phiếu & Xuất PDF chuyên dụng**:
-   - Tích hợp sẵn nút "In phiếu / PDF".
-   - Tối ưu hóa `@media print` cho khổ giấy A4 dọc, tự động ẩn các nút công cụ, giữ lại bản in sạch đẹp chuẩn y khoa.
+5. **Xem từng phiếu dưới dạng PDF**:
+   - Trong danh sách lịch sử, mỗi ca đều có nút **"Xem / In PDF"**.
+   - Bấm vào sẽ mở giao diện phiếu y tế nguyên bản đầy đủ của bệnh nhân đó với các ô điểm được tô màu trực quan.
+   - Nút **"In phiếu này / Lưu PDF (A4)"** cho phép in qua máy in AirPrint hoặc lưu thành file PDF trực tiếp vào ứng dụng Tệp (Files) trên iPad.
+
+6. **Báo cáo & Thống kê theo Tháng / Theo Năm**:
+   - Thống kê chi tiết theo: **Toàn bộ thời gian**, **Theo năm**, hoặc **Theo tháng & năm**.
+   - Bảng 4 chỉ số KPI chính:
+     + **Tổng số ca được đánh giá**
+     + **Số bệnh nhân được đánh giá** (Unique Patients)
+     + **Tần suất trung bình** (Lượt khám / BN)
+     + **Điểm MRS trung bình**
+   - Biểu đồ phân bố mức độ (Không/Nhẹ, Trung bình, Nặng) và điểm trung bình 3 nhóm (Tâm lý, TK thực vật, Niệu dục).
+   - **Xuất báo cáo Excel (.CSV)**: Tệp CSV chuẩn UTF-8 BOM tiếng Việt, mở trực tiếp trên Excel không bị lỗi font.
+   - **In báo cáo thống kê**: In phiếu tổng hợp kết quả y tế A4.
+
+7. **Đồng bộ Đám Mây Đa Thiết Bị Thời Gian Thực (Firebase Realtime Cloud Sync)**:
+   - **Tập trung dữ liệu về 1 nơi (Cloud Hub)**: Tất cả phiếu đánh giá từ nhiều iPad tại các phòng khám, điện thoại của điều dưỡng hoặc máy tính của bác sĩ đều được tự động lưu về một cơ sở dữ liệu Firebase Realtime Database duy nhất.
+   - **Xem thống kê & Tìm kiếm tập trung**: Dù ca đánh giá được thực hiện ở thiết bị nào, bất kỳ máy nào cũng có thể tìm kiếm lại theo Tên, Năm sinh, Ngày khám và xem báo cáo tổng hợp toàn viện theo Tháng / Năm.
+   - **Cơ chế 2 tầng thông minh (Offline-First Hybrid Sync)**: Luôn lưu song song vào bộ nhớ máy (LocalStorage) và Cloud. Hoạt động bình thường ngay cả khi phòng khám rớt mạng, và tự động đồng bộ khi có Internet.
+   - **Huy hiệu trạng thái trực quan**: Thanh công cụ hiển thị rõ trạng thái `Cloud Realtime` (Xanh: đã kết nối, Xanh dương: đang đồng bộ, Xám: ngoại tuyến). Có thể bấm vào để xem chi tiết hoặc thay đổi cấu hình.
+
+8. **Sao lưu, Bảo mật & Chuyển đổi dữ liệu**:
+   - **Bảo mật quyền quản trị**: Tab **Sao lưu & Đồng bộ** và cài đặt Cloud được bảo vệ bằng mật khẩu quản trị `thanhta92`.
+   - Xuất toàn bộ dữ liệu ra file `.json` để sao lưu hoặc chuyển đổi sang thiết bị khác.
+   - Nhập file `.json` để khôi phục hoặc bổ sung dữ liệu khi cần thiết.
 
 ---
 

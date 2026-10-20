@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Bảng đánh giá tình trạng mãn kinh - MRS (Menopause Rating Scale)</title>
+  <title>MRS - Thang điểm đánh giá tình trạng Mãn kinh</title>
   <meta name="description" content="Thang điểm đánh giá tình trạng mãn kinh Menopause Rating Scale (MRS) chuẩn y khoa. Tự động tính điểm và lưu trữ cục bộ trên iPad / máy tính bảng.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="MRS Thang Điểm">
+  <meta name="apple-mobile-web-app-title" content="MRS - Thang điểm đánh giá tình trạng Mãn kinh">
   <meta name="theme-color" content="#368f91">
   <link rel="manifest" href="manifest.json">
 
@@ -110,6 +110,166 @@
       height: 8px;
       border-radius: 50%;
       background: var(--primary-teal);
+    }
+
+    /* Cloud Sync Realtime Badge */
+    .cloud-sync-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+
+    .cloud-sync-badge:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .cloud-sync-badge.status-online {
+      background: #eafaf1;
+      border-color: #a3e6be;
+      color: #1a7f4a;
+    }
+
+    .cloud-sync-badge.status-online .sync-dot {
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+      animation: pulse-dot 2s infinite;
+    }
+
+    .cloud-sync-badge.status-syncing {
+      background: #e6f7fc;
+      border-color: #9fe2f7;
+      color: #0284c7;
+    }
+
+    .cloud-sync-badge.status-syncing .sync-dot {
+      background: #0ea5e9;
+      animation: pulse-dot 0.8s infinite;
+    }
+
+    .cloud-sync-badge.status-offline,
+    .cloud-sync-badge.status-unconfigured {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      color: #64748b;
+    }
+
+    .cloud-sync-badge.status-offline .sync-dot {
+      background: #94a3b8;
+    }
+
+    .cloud-sync-badge.status-error {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #dc2626;
+    }
+
+    .cloud-sync-badge.status-error .sync-dot {
+      background: #ef4444;
+    }
+
+    @keyframes pulse-dot {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      50% { transform: scale(1.25); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.8; }
+    }
+
+    /* Modal Cloud Sync Card & Form Elements */
+    .cloud-sync-card-status {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .cloud-status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .cloud-status-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .cloud-status-tag.status-online {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .cloud-status-tag.status-syncing {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .cloud-status-tag.status-error {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .cloud-form-group {
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .cloud-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--primary-teal-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .cloud-input {
+      padding: 8px 12px;
+      border: 1.5px solid var(--border-teal);
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-family: inherit;
+      color: var(--text-main);
+      background: #ffffff;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .cloud-input:focus {
+      border-color: var(--primary-teal);
+      box-shadow: 0 0 0 3px rgba(54, 143, 145, 0.15);
+    }
+
+    .cloud-help-box {
+      margin-top: 14px;
+      background: #f0f9ff;
+      border-left: 4px solid #0284c7;
+      padding: 12px 14px;
+      border-radius: 4px;
     }
 
     .toolbar-actions {
@@ -759,6 +919,8 @@
       align-items: center;
       justify-content: center;
       padding: 16px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       animation: fadeIn 0.2s ease;
     }
 
@@ -769,8 +931,8 @@
     .modal-card {
       background: #fff;
       width: 100%;
-      max-width: 680px;
-      max-height: 88vh;
+      max-width: 880px;
+      max-height: 90vh;
       border-radius: var(--radius-lg);
       box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
       display: flex;
@@ -779,10 +941,66 @@
       animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* Dedicated Scrollable Card for Single Record Sheet Preview */
+    .preview-modal-card {
+      background: #fff;
+      width: 100%;
+      max-width: 900px;
+      height: 90vh;
+      max-height: 90vh;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .preview-modal-toolbar {
+      background: #f8fafc;
+      border-bottom: 1.5px solid var(--border-teal);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .preview-modal-body,
+    #preview-sheet-modal .modal-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      padding: 16px 16px 50px;
+      background: #eaeff0;
+      display: block;
+    }
+
+    #preview-sheet-modal .medical-sheet {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      margin: 0 auto 30px auto !important;
+    }
+
+    /* Input shake animation for incorrect password */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    .shake-anim {
+      animation: shake 0.35s ease;
+      border-color: #ef4444 !important;
+    }
+
     .modal-header {
       background: var(--primary-teal);
       color: #fff;
-      padding: 16px 20px;
+      padding: 14px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -815,6 +1033,53 @@
       background: rgba(255, 255, 255, 0.2);
     }
 
+    /* Modal Navigation Tabs */
+    .modal-tabs {
+      display: flex;
+      background: #eef6f6;
+      border-bottom: 1.5px solid var(--border-teal);
+      padding: 0 16px;
+      gap: 6px;
+      overflow-x: auto;
+    }
+
+    .modal-tab-btn {
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .modal-tab-btn:hover {
+      color: var(--primary-teal-dark);
+    }
+
+    .modal-tab-btn.active {
+      color: var(--primary-teal-dark);
+      border-bottom-color: var(--primary-teal);
+      background: #fff;
+      font-weight: 700;
+    }
+
+    .modal-tab-pane {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .modal-tab-pane.active {
+      display: flex;
+    }
+
     .modal-body {
       padding: 18px 20px;
       overflow-y: auto;
@@ -824,23 +1089,55 @@
       gap: 12px;
     }
 
-    .search-filter-box {
-      display: flex;
+    /* Advanced Multi-Search Bar */
+    .multi-search-bar {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.3fr auto;
       gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .search-input {
-      flex: 1;
-      padding: 9px 14px;
+      background: #f4f9f9;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
       border: 1.5px solid var(--border-teal);
-      border-radius: 8px;
-      font-size: 0.9rem;
-      outline: none;
+      align-items: flex-end;
     }
 
-    .search-input:focus {
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--primary-teal-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .filter-input {
+      padding: 8px 12px;
+      border: 1.5px solid #a6d2d3;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      outline: none;
+      background: #fff;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .filter-input:focus {
       border-color: var(--primary-teal);
+    }
+
+    .history-result-counter {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 0 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .history-list {
@@ -858,6 +1155,7 @@
       align-items: center;
       transition: all 0.2s ease;
       background: #fafdfd;
+      gap: 12px;
     }
 
     .history-card:hover {
@@ -873,6 +1171,17 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .patient-visit-pill {
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: #e6f4f4;
+      color: var(--primary-teal-dark);
+      border: 1px solid #aed6d7;
     }
 
     .history-info-meta {
@@ -892,6 +1201,176 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Statistics & Report Layout */
+    .stats-control-panel {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: #f4f9f9;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border-teal);
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .stats-filters {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .stats-select {
+      padding: 8px 12px;
+      border: 1.5px solid #a6d2d3;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      outline: none;
+      background: #fff;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .stats-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 8px 0;
+    }
+
+    .kpi-card {
+      background: #fff;
+      border: 1.5px solid var(--border-teal);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    .kpi-title {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--primary-teal-dark);
+      margin: 4px 0 2px;
+      line-height: 1.1;
+    }
+
+    .kpi-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .stats-breakdown-card {
+      background: #fff;
+      border: 1.5px solid var(--border-teal);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .breakdown-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--primary-teal-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .breakdown-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.86rem;
+    }
+
+    .breakdown-name {
+      width: 170px;
+      font-weight: 600;
+    }
+
+    .breakdown-bar-wrapper {
+      flex: 1;
+      height: 10px;
+      background: #eaf2f2;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .breakdown-bar-fill {
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.4s ease;
+    }
+
+    .breakdown-val {
+      width: 110px;
+      text-align: right;
+      font-weight: 700;
+      color: var(--primary-teal-dark);
+    }
+
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .stats-table th {
+      background: #399194;
+      color: #fff;
+      font-weight: 700;
+      padding: 8px 10px;
+      text-align: center;
+      border: 1px solid #71b9bb;
+    }
+
+    .stats-table td {
+      padding: 7px 10px;
+      border: 1px solid var(--table-border);
+      text-align: center;
+    }
+
+    .stats-table tr:nth-child(even) {
+      background: #f7fbfb;
+    }
+
+    /* Modal for Viewing/Printing Individual Record as PDF */
+    .preview-modal-card {
+      background: #fff;
+      width: 100%;
+      max-width: 900px;
+      max-height: 94vh;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .preview-modal-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 18px;
+      background: #f4f9f9;
+      border-bottom: 1.5px solid var(--border-teal);
     }
 
     .empty-state {
@@ -1172,6 +1651,59 @@
         print-color-adjust: exact;
         page-break-inside: avoid;
       }
+
+      /* Print Single Record Preview */
+      body.is-printing-single-record #print-area,
+      body.is-printing-single-record .top-toolbar,
+      body.is-printing-single-record #history-modal,
+      body.is-printing-single-record .toast-container {
+        display: none !important;
+      }
+
+      body.is-printing-single-record #preview-sheet-modal {
+        display: block !important;
+        position: static !important;
+        background: transparent !important;
+        padding: 0 !important;
+      }
+
+      body.is-printing-single-record #preview-sheet-modal .preview-modal-card {
+        box-shadow: none !important;
+        border: none !important;
+        max-width: 100% !important;
+        border-radius: 0 !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      body.is-printing-single-record #preview-sheet-modal .modal-header,
+      body.is-printing-single-record #preview-sheet-modal .preview-modal-toolbar {
+        display: none !important;
+      }
+
+      body.is-printing-single-record #preview-sheet-modal .modal-body {
+        padding: 0 !important;
+        overflow: visible !important;
+      }
+
+      /* Print Statistics Report */
+      #report-print-container {
+        display: none;
+      }
+
+      body.is-printing-report #print-area,
+      body.is-printing-report .top-toolbar,
+      body.is-printing-report #history-modal,
+      body.is-printing-report #preview-sheet-modal {
+        display: none !important;
+      }
+
+      body.is-printing-report #report-print-container {
+        display: block !important;
+        padding: 10px !important;
+        background: #fff !important;
+      }
     }
   </style>
 </head>
@@ -1184,7 +1716,7 @@
     <div class="toolbar-left">
       <span class="status-badge">
         <span class="dot"></span>
-        <span>MRS Thang Điểm Mãn Kinh</span>
+        <span>MRS - Thang điểm đánh giá tình trạng Mãn kinh</span>
       </span>
       <span id="answered-counter" style="color: var(--text-muted); font-size: 0.82rem; font-weight: 500;">
         Đã trả lời: 0/11
@@ -1192,15 +1724,21 @@
     </div>
 
     <div class="toolbar-actions">
-      <button type="button" class="btn btn-outline" id="btn-open-history" title="Xem lịch sử đánh giá đã lưu trên iPad">
+      <!-- Cloud Sync Realtime Badge -->
+      <div id="cloud-sync-status" class="cloud-sync-badge status-offline" title="Bấm để xem trạng thái và cài đặt đồng bộ đám mây (Cloud Sync)">
+        <span class="sync-dot"></span>
+        <span class="sync-text">Cloud Realtime</span>
+      </div>
+
+      <button type="button" class="btn btn-outline" id="btn-open-history" title="Xem danh sách lịch sử đánh giá & báo cáo thống kê">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
-        <span>Lịch sử iPad (<span id="history-count">0</span>)</span>
+        <span>Lịch sử & Thống kê (<span id="history-count">0</span>)</span>
       </button>
 
-      <button type="button" class="btn btn-teal" id="btn-save-record" title="Hoàn tất và lưu kết quả vào bộ nhớ iPad">
+      <button type="button" class="btn btn-teal" id="btn-save-record" title="Hoàn tất và lưu kết quả vào bộ nhớ máy & Cloud">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
           <polyline points="17 21 17 13 7 13 7 21"></polyline>
@@ -1574,49 +2112,525 @@
 </div>
 
 <!-- ==========================================================================
-     HISTORY MODAL (Offline Storage for iPad)
+     ADVANCED HISTORY & STATISTICS MODAL (Offline Storage for iPad)
      ========================================================================== -->
 <div class="modal-overlay" id="history-modal" onclick="handleModalOverlayClick(event)">
   <div class="modal-card">
     <div class="modal-header">
       <div class="modal-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <polyline points="12 6 12 12 16 14"></polyline>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        <span>Lịch sử đánh giá MRS trên thiết bị này</span>
+        <span>Quản Lý Đánh Giá & Thống Kê MRS</span>
       </div>
       <button type="button" class="modal-close" onclick="closeHistoryModal()" aria-label="Đóng">&times;</button>
     </div>
 
+    <!-- Navigation Tabs -->
+    <div class="modal-tabs">
+      <button type="button" class="modal-tab-btn active" id="tab-btn-list" onclick="switchModalTab('list')">
+        <span>📋 Danh sách đánh giá (<span id="tab-count-badge">0</span>)</span>
+      </button>
+      <button type="button" class="modal-tab-btn" id="tab-btn-stats" onclick="switchModalTab('stats')">
+        <span>📊 Báo cáo & Thống kê</span>
+      </button>
+      <button type="button" class="modal-tab-btn" id="tab-btn-backup" onclick="switchModalTab('backup')" title="Yêu cầu mật khẩu quản trị để truy cập">
+        <span>💾 Sao lưu & Đồng bộ <span style="font-size: 0.75rem; opacity: 0.85;">🔒</span></span>
+      </button>
+    </div>
+
     <div class="modal-body">
-      <div class="search-filter-box">
-        <input type="text" id="history-search" class="search-input" placeholder="Tìm theo tên bệnh nhân hoặc ngày..." oninput="renderHistoryList()">
+      <!-- TAB 1: LIST WITH ADVANCED MULTI-SEARCH -->
+      <div class="modal-tab-pane active" id="pane-list">
+        <div class="multi-search-bar">
+          <div class="filter-group">
+            <label class="filter-label" for="filter-name">Tên bệnh nhân</label>
+            <input type="text" id="filter-name" class="filter-input" placeholder="Nhập tên bệnh nhân..." oninput="handleFilterChange()">
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="filter-birthyear">Năm sinh</label>
+            <input type="number" id="filter-birthyear" class="filter-input" placeholder="Ví dụ: 1975" min="1920" max="2026" oninput="handleFilterChange()">
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="filter-date">Ngày đánh giá</label>
+            <input type="date" id="filter-date" class="filter-input" onchange="handleFilterChange()">
+          </div>
+          <div class="filter-group" style="justify-content: flex-end;">
+            <button type="button" class="btn btn-outline" style="padding: 8px 12px; font-size: 0.82rem;" onclick="resetFilters()">
+              Xoá lọc
+            </button>
+          </div>
+        </div>
+
+        <div class="history-result-counter">
+          <div>
+            Kết quả: <strong id="filter-count-cases">0</strong> ca 
+            <span style="font-weight: normal; color: var(--text-muted);">(thuộc <strong id="filter-count-patients">0</strong> bệnh nhân)</span>
+          </div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">
+            Nhấn "Xem / In PDF" để xuất phiếu từng ca
+          </div>
+        </div>
+
+        <div class="history-list" id="history-list-container">
+          <!-- Rendered dynamically by JS -->
+        </div>
       </div>
 
-      <div class="history-list" id="history-list-container">
-        <!-- Rendered by JS -->
+      <!-- TAB 2: DETAILED STATISTICS & REPORTING -->
+      <div class="modal-tab-pane" id="pane-stats">
+        <div class="stats-control-panel">
+          <div class="stats-filters">
+            <label style="font-weight: 700; font-size: 0.88rem; color: var(--primary-teal-dark);">Kỳ báo cáo:</label>
+            <select id="stats-period-type" class="stats-select" onchange="handleStatsPeriodChange()">
+              <option value="all">Toàn bộ thời gian</option>
+              <option value="year">Theo Năm</option>
+              <option value="month" selected>Theo Tháng & Năm</option>
+            </select>
+
+            <select id="stats-month-select" class="stats-select" onchange="renderStatistics()">
+              <!-- Generated by JS -->
+            </select>
+
+            <select id="stats-year-select" class="stats-select" onchange="renderStatistics()">
+              <!-- Generated by JS -->
+            </select>
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn btn-teal" style="font-size: 0.84rem; padding: 7px 12px;" onclick="exportStatisticsCSV()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Xuất Excel (CSV)</span>
+            </button>
+            <button type="button" class="btn btn-coral" style="font-size: 0.84rem; padding: 7px 12px;" onclick="printStatisticsReport()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              <span>In báo cáo</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 KPI Overview Cards -->
+        <div class="stats-kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">Tổng số ca đánh giá</span>
+            <span class="kpi-value" id="stat-total-cases">0</span>
+            <span class="kpi-sub">Lượt khám / đánh giá</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Số bệnh nhân</span>
+            <span class="kpi-value" id="stat-total-patients" style="color: #2a7f62;">0</span>
+            <span class="kpi-sub">Số bệnh nhân duy nhất</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Tần suất trung bình</span>
+            <span class="kpi-value" id="stat-avg-visits" style="color: #c07d2c;">0</span>
+            <span class="kpi-sub">Lượt đánh giá / bệnh nhân</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Điểm MRS trung bình</span>
+            <span class="kpi-value" id="stat-avg-score" style="color: var(--accent-coral);">0</span>
+            <span class="kpi-sub">Thang điểm tối đa 44</span>
+          </div>
+        </div>
+
+        <!-- Breakdown Section: Severity Levels & Group Subtotals -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <!-- Severity Breakdown -->
+          <div class="stats-breakdown-card">
+            <div class="breakdown-title">
+              <span>●</span> Phân loại mức độ triệu chứng MRS
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-name">Không / Rất nhẹ (0-4)</span>
+              <div class="breakdown-bar-wrapper">
+                <div class="breakdown-bar-fill" id="bar-sev-none" style="width: 0%; background: #2ca5a7;"></div>
+              </div>
+              <span class="breakdown-val" id="text-sev-none">0 (0%)</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-name">Nhẹ (5-8)</span>
+              <div class="breakdown-bar-wrapper">
+                <div class="breakdown-bar-fill" id="bar-sev-mild" style="width: 0%; background: #27794e;"></div>
+              </div>
+              <span class="breakdown-val" id="text-sev-mild">0 (0%)</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-name">Trung bình (9-16)</span>
+              <div class="breakdown-bar-wrapper">
+                <div class="breakdown-bar-fill" id="bar-sev-moderate" style="width: 0%; background: #dc964d;"></div>
+              </div>
+              <span class="breakdown-val" id="text-sev-moderate">0 (0%)</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-name">Nặng (≥ 17)</span>
+              <div class="breakdown-bar-wrapper">
+                <div class="breakdown-bar-fill" id="bar-sev-severe" style="width: 0%; background: #ad2b2b;"></div>
+              </div>
+              <span class="breakdown-val" id="text-sev-severe">0 (0%)</span>
+            </div>
+          </div>
+
+          <!-- Group Scores Breakdown -->
+          <div class="stats-breakdown-card">
+            <div class="breakdown-title">
+              <span>●</span> Điểm trung bình theo 3 nhóm MRS
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-name">Tâm lý (MRS1)</span>
+              <div class="breakdown-bar-wrapper">
+                <div class="breakdown-bar-fill" id="bar-grp-mrs1" style="width: 0%; background: #3aa4a6;"></div>
+              </div>
+              <span class="breakdown-val" id="text-grp-mrs1">0 / 16</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-name">TK Thực vật (MRS2)</span>
+              <div class="breakdown-bar-wrapper">
+                <div class="breakdown-bar-fill" id="bar-grp-mrs2" style="width: 0%; background: #3aa4a6;"></div>
+              </div>
+              <span class="breakdown-val" id="text-grp-mrs2">0 / 16</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-name">Niệu dục (MRS3)</span>
+              <div class="breakdown-bar-wrapper">
+                <div class="breakdown-bar-fill" id="bar-grp-mrs3" style="width: 0%; background: #3aa4a6;"></div>
+              </div>
+              <span class="breakdown-val" id="text-grp-mrs3">0 / 12</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table of cases in the reporting period -->
+        <div style="background: #fff; border: 1.5px solid var(--border-teal); border-radius: var(--radius-md); padding: 12px; margin-top: 4px;">
+          <div style="font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; color: var(--primary-teal-dark);">
+            Danh sách chi tiết các ca trong kỳ báo cáo (<span id="stats-table-count">0</span> ca)
+          </div>
+          <div style="max-height: 240px; overflow-y: auto;">
+            <table class="stats-table">
+              <thead>
+                <tr>
+                  <th style="width: 45px;">STT</th>
+                  <th>Họ & tên</th>
+                  <th style="width: 80px;">Năm sinh</th>
+                  <th style="width: 105px;">Ngày đánh giá</th>
+                  <th style="width: 65px;">MRS1</th>
+                  <th style="width: 65px;">MRS2</th>
+                  <th style="width: 65px;">MRS3</th>
+                  <th style="width: 75px;">Tổng</th>
+                  <th style="width: 100px;">Mức độ</th>
+                  <th style="width: 90px;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="stats-table-tbody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: BACKUP / RESTORE / STORAGE -->
+      <div class="modal-tab-pane" id="pane-backup">
+        <div style="background: #fdfefe; border: 1.5px solid var(--border-teal); border-radius: var(--radius-md); padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+          <!-- Admin Access Notification & Relock Button -->
+          <div style="display: flex; justify-content: space-between; align-items: center; background: #fefce8; border: 1px solid #fde047; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; color: #854d0e; flex-wrap: wrap; gap: 8px;">
+            <span>🔒 Bạn đang mở quyền quản trị viên (Mật khẩu: thanhta92).</span>
+            <button type="button" class="btn btn-outline" style="font-size: 0.75rem; padding: 4px 10px; background: #fff;" onclick="isBackupUnlocked=false; executeSwitchTab('list'); showToast('Đã khóa lại tab Sao lưu & Đồng bộ');">
+              Khóa lại tab này
+            </button>
+          </div>
+
+          <!-- Cloud Realtime Sync Card -->
+          <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: var(--radius-md); padding: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+              <h4 style="color: #166534; margin: 0; display: flex; align-items: center; gap: 6px; font-size: 0.95rem;">
+                ☁️ Đồng bộ đám mây (Cloud Realtime)
+              </h4>
+              <button type="button" class="btn btn-teal" style="font-size: 0.8rem; padding: 5px 14px;" onclick="openCloudConfigModal()">
+                Cài đặt kết nối Cloud
+              </button>
+            </div>
+            <p style="font-size: 0.84rem; color: #15803d; margin-bottom: 12px; line-height: 1.5;">
+              Tất cả các ca đánh giá được tự động lưu về một nơi tập trung trên Cloud thời gian thực. Bất kỳ iPad, điện thoại hoặc máy tính nào mở ứng dụng đều có thể tìm kiếm lại và xem báo cáo thống kê tổng hợp.
+            </p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-outline" style="font-size: 0.8rem; padding: 6px 14px; background: #fff;" onclick="window.MrsFirebase && window.MrsFirebase.pullAllFromCloud()">
+                📥 Tải mới nhất từ Cloud
+              </button>
+              <button type="button" class="btn btn-outline" style="font-size: 0.8rem; padding: 6px 14px; background: #fff;" onclick="window.MrsFirebase && window.MrsFirebase.pushAllLocalToCloud()">
+                📤 Đẩy dữ liệu máy lên Cloud
+              </button>
+            </div>
+          </div>
+
+          <hr style="border: none; border-top: 1px dashed var(--border-teal);">
+
+          <div>
+            <h4 style="color: var(--primary-teal-dark); margin-bottom: 4px;">📥 Xuất dữ liệu sao lưu (.JSON)</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
+              Tải toàn bộ hồ sơ đánh giá lưu trên thiết bị về máy dưới dạng tệp tin JSON an toàn. Bạn có thể dùng tệp này để chuyển sang iPad hoặc máy tính khác.
+            </p>
+            <button type="button" class="btn btn-teal" style="font-size: 0.85rem;" onclick="exportHistoryJSON()">
+              Tải tệp sao lưu (.json)
+            </button>
+          </div>
+
+          <hr style="border: none; border-top: 1px dashed var(--border-teal);">
+
+          <div>
+            <h4 style="color: var(--primary-teal-dark); margin-bottom: 4px;">📤 Nhập dữ liệu từ tệp (.JSON)</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
+              Khôi phục hoặc nhập thêm danh sách đánh giá từ một tệp sao lưu JSON đã xuất trước đó.
+            </p>
+            <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="handleImportJSON(event)">
+            <button type="button" class="btn btn-outline" style="font-size: 0.85rem;" onclick="document.getElementById('import-file-input').click()">
+              Chọn tệp JSON để nhập
+            </button>
+          </div>
+
+          <hr style="border: none; border-top: 1px dashed var(--border-teal);">
+
+          <div>
+            <h4 style="color: #ad2b2b; margin-bottom: 4px;">⚠️ Xóa toàn bộ dữ liệu</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
+              Thao tác này sẽ xóa vĩnh viễn toàn bộ lịch sử đánh giá đã lưu trên iPad này. Không thể hoàn tác.
+            </p>
+            <button type="button" class="btn btn-outline" style="font-size: 0.85rem; color: #ad2b2b; border-color: #f1b3b3;" onclick="clearAllHistory()">
+              Xoá toàn bộ dữ liệu trên iPad
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="modal-footer">
       <div style="font-size: 0.8rem; color: var(--text-muted);">
-        Dữ liệu lưu an toàn trên iPad (LocalStorage)
+        Dữ liệu lưu trữ an toàn & bảo mật trực tiếp trên iPad (LocalStorage)
       </div>
-      <div style="display: flex; gap: 8px;">
-        <button type="button" class="btn btn-outline" style="font-size: 0.82rem; padding: 6px 12px;" onclick="exportHistoryJSON()">
-          Xuất dữ liệu (.json)
-        </button>
-        <button type="button" class="btn btn-outline" style="font-size: 0.82rem; padding: 6px 12px; color: #ad2b2b;" onclick="clearAllHistory()">
-          Xoá tất cả
+      <div>
+        <button type="button" class="btn btn-outline" style="font-size: 0.85rem;" onclick="closeHistoryModal()">
+          Đóng cửa sổ
         </button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- ==========================================================================
+     INDIVIDUAL RECORD PREVIEW MODAL (View & Print Single Sheet as PDF)
+     ========================================================================== -->
+<div class="modal-overlay" id="preview-sheet-modal" onclick="handlePreviewOverlayClick(event)">
+  <div class="preview-modal-card">
+    <div class="preview-modal-toolbar">
+      <div style="font-weight: 700; color: var(--primary-teal-dark); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+        <span>Phiếu Đánh Giá MRS:</span>
+        <span id="preview-patient-title" style="color: var(--text-main); font-weight: 800;"></span>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button type="button" class="btn btn-teal" style="font-size: 0.85rem;" onclick="printActivePreview()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span>In phiếu này / Lưu PDF (A4)</span>
+        </button>
+        <button type="button" class="modal-close" style="color: var(--text-main);" onclick="closePreviewModal()">&times;</button>
+      </div>
+    </div>
+
+    <div class="modal-body preview-modal-body" id="preview-modal-body">
+      <!-- Replica of the Medical Sheet for this specific record -->
+      <div id="preview-sheet-content" class="medical-sheet" style="background: #fff; margin: 0 auto; max-width: 820px;">
+        <!-- Injected dynamically by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================================================
+     MODAL: CẤU HÌNH & ĐỒNG BỘ ĐÁM MÂY (FIREBASE REALTIME CLOUD)
+     ========================================================================== -->
+<div class="modal-overlay" id="modal-cloud-sync" onclick="handleCloudModalOverlayClick(event)">
+  <div class="modal-card" style="max-width: 620px;">
+    <div class="modal-header">
+      <div class="modal-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+          <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+          <polyline points="12 13 12 17 12 13"></polyline>
+        </svg>
+        <span>Đồng Bộ Đám Mây (Firebase Realtime Cloud)</span>
+      </div>
+      <button type="button" class="modal-close" onclick="closeCloudConfigModal()" aria-label="Đóng">&times;</button>
+    </div>
+
+    <div class="modal-body" style="padding: 20px;">
+      <!-- Trạng thái kết nối & Thao tác nhanh -->
+      <div class="cloud-sync-card-status">
+        <div class="cloud-status-row">
+          <div>
+            <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">Trạng thái kết nối Cloud:</div>
+            <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 3px;">
+              Tự động đồng bộ tức thì mọi phiếu đánh giá giữa iPad, điện thoại và máy tính.
+            </div>
+          </div>
+          <div id="cloud-modal-status-badge" class="cloud-status-tag status-offline">
+            <span class="sync-dot"></span>
+            <span id="cloud-modal-status-text">Đang kiểm tra...</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-teal" id="btn-cloud-pull" style="flex: 1; min-width: 170px; font-size: 0.84rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Tải dữ liệu từ Cloud về</span>
+          </button>
+          <button type="button" class="btn btn-outline" id="btn-cloud-push" style="flex: 1; min-width: 170px; font-size: 0.84rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span>Đẩy dữ liệu máy lên Cloud</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form cấu hình Firebase Realtime Database -->
+      <div style="margin-top: 18px;">
+        <div style="font-weight: 700; font-size: 0.88rem; margin-bottom: 10px; color: var(--primary-teal-dark); display: flex; align-items: center; gap: 6px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+          <span>Cấu hình kết nối Firebase Realtime Database</span>
+        </div>
+
+        <div class="cloud-form-group">
+          <label class="cloud-label" for="cfg-firebase-db-url">Database URL (Bắt buộc):</label>
+          <input type="text" class="cloud-input" id="cfg-firebase-db-url" placeholder="https://tina-phanquyen-default-rtdb.asia-southeast1.firebasedatabase.app">
+          <small style="color: var(--text-muted); font-size: 0.74rem;">Địa chỉ Firebase Realtime Database dùng chung cho các máy.</small>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
+          <div class="cloud-form-group">
+            <label class="cloud-label" for="cfg-firebase-project-id">Project ID:</label>
+            <input type="text" class="cloud-input" id="cfg-firebase-project-id" placeholder="tina-phanquyen">
+          </div>
+          <div class="cloud-form-group">
+            <label class="cloud-label" for="cfg-firebase-api-key">API Key (Tùy chọn):</label>
+            <input type="text" class="cloud-input" id="cfg-firebase-api-key" placeholder="AIzaSy...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Hướng dẫn hoạt động -->
+      <div class="cloud-help-box">
+        <div style="font-weight: 700; color: #0369a1; font-size: 0.85rem; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>Cách thức hoạt động đồng bộ đa thiết bị:</span>
+        </div>
+        <p style="margin: 0; font-size: 0.8rem; line-height: 1.5; color: var(--text-muted);">
+          Mỗi lần Bác sĩ hoặc Điều dưỡng thực hiện đánh giá trên <b>iPad</b>, <b>Điện thoại</b> hay <b>Máy tính</b>, dữ liệu sẽ tự động lưu về một cơ sở dữ liệu Cloud tập trung. Bạn có thể mở bất kỳ thiết bị nào lên để <b>tìm kiếm lại hồ sơ</b> hoặc <b>xem báo cáo thống kê tổng hợp toàn viện</b> theo thời gian thực mà không sợ mất mát dữ liệu.
+        </p>
+      </div>
+    </div>
+
+    <div class="modal-footer" style="display: flex; justify-content: space-between; gap: 10px;">
+      <button type="button" class="btn btn-outline" id="btn-cloud-reset-default" style="font-size: 0.84rem;">
+        Cấu hình mặc định
+      </button>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="btn btn-outline" onclick="closeCloudConfigModal()" style="font-size: 0.84rem;">Đóng</button>
+        <button type="button" class="btn btn-teal" id="btn-cloud-save-config" style="font-size: 0.84rem; font-weight: 700;">
+          Lưu & Kết nối lại
+        </button>
+      </div>
+</div>
+
+<!-- ==========================================================================
+     MODAL: XÁC THỰC MẬT KHẨU QUẢN TRỊ ("thanhta92")
+     ========================================================================== -->
+<div class="modal-overlay" id="modal-admin-auth" style="z-index: 1050;" onclick="handleAuthModalOverlayClick(event)">
+  <div class="modal-card" style="max-width: 420px; border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.3);">
+    <div class="modal-header" style="background: var(--primary-teal); color: #fff; padding: 14px 18px;">
+      <div class="modal-title" style="font-size: 1rem; display: flex; align-items: center; gap: 8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <span>Xác Thực Quyền Quản Trị</span>
+      </div>
+      <button type="button" class="modal-close" onclick="closeAuthModal()" aria-label="Đóng">&times;</button>
+    </div>
+
+    <div class="modal-body" style="padding: 20px 22px; gap: 14px;">
+      <div style="font-size: 0.88rem; color: var(--text-main); line-height: 1.5;">
+        Chức năng <strong>"Sao lưu & Đồng bộ"</strong> yêu cầu mật khẩu quản trị để bảo mật dữ liệu:
+      </div>
+
+      <div style="position: relative;">
+        <input type="password" id="admin-auth-password" class="filter-input" placeholder="Nhập mật khẩu..." 
+          style="width: 100%; padding: 10px 42px 10px 12px; font-size: 0.95rem; border: 1.5px solid var(--border-teal);"
+          onkeydown="if(event.key==='Enter') confirmAdminAuth()">
+        <button type="button" id="btn-toggle-auth-pwd" onclick="toggleAuthPasswordVisibility()" 
+          style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; font-size: 1rem;" title="Hiện / Ẩn mật khẩu">
+          👁️
+        </button>
+      </div>
+
+      <div id="admin-auth-error" style="display: none; color: #dc2626; font-size: 0.82rem; font-weight: 600;">
+        ⚠️ Mật khẩu không chính xác. Vui lòng thử lại!
+      </div>
+    </div>
+
+    <div class="modal-footer" style="padding: 12px 18px; display: flex; justify-content: flex-end; gap: 8px; background: #f8fafc; border-top: 1px solid #e2e8f0;">
+      <button type="button" class="btn btn-outline" onclick="closeAuthModal()" style="font-size: 0.85rem;">Hủy</button>
+      <button type="button" class="btn btn-teal" onclick="confirmAdminAuth()" style="font-size: 0.85rem; font-weight: 700;">
+        Xác nhận
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Invisible Print Area for Statistics Report -->
+<div id="report-print-container"></div>
+
 <!-- Toast Container -->
 <div class="toast-container" id="toast-container"></div>
+
+<!-- Firebase SDK v10.8.0 (Compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+<!-- Firebase Realtime Cloud Sync Module -->
+<script src="firebase-sync.js?v=1"></script>
 
 <!-- ==========================================================================
      JAVASCRIPT LOGIC
@@ -1672,11 +2686,95 @@
     // Action buttons
     document.getElementById('btn-save-record').addEventListener('click', saveRecord);
     document.getElementById('btn-open-history').addEventListener('click', openHistoryModal);
+
+    // Cloud Sync UI listeners
+    document.getElementById('cloud-sync-status')?.addEventListener('click', openCloudConfigModal);
+
+    // Pull from cloud
+    document.getElementById('btn-cloud-pull')?.addEventListener('click', async () => {
+      if (!window.MrsFirebase) return;
+      showToast('Đang tải dữ liệu từ Cloud...');
+      const ok = await window.MrsFirebase.pullAllFromCloud();
+      if (ok) {
+        showToast('Tải dữ liệu từ Cloud thành công!');
+        updateHistoryBadge();
+        if (document.getElementById('history-modal')?.classList.contains('active')) {
+          renderHistoryList();
+          renderStatistics();
+        }
+      } else {
+        showToast('Không thể tải từ Cloud. Kiểm tra kết nối mạng!');
+      }
+    });
+
+    // Push local to cloud
+    document.getElementById('btn-cloud-push')?.addEventListener('click', async () => {
+      if (!window.MrsFirebase) return;
+      showToast('Đang đẩy dữ liệu máy lên Cloud...');
+      const ok = await window.MrsFirebase.pushAllLocalToCloud();
+      if (ok) {
+        showToast('Đẩy dữ liệu lên Cloud thành công!');
+      } else {
+        showToast('Lỗi khi đẩy dữ liệu lên Cloud!');
+      }
+    });
+
+    // Save Cloud config
+    document.getElementById('btn-cloud-save-config')?.addEventListener('click', () => {
+      if (!window.MrsFirebase) return;
+      const databaseURL = (document.getElementById('cfg-firebase-db-url')?.value || '').trim();
+      const projectId = (document.getElementById('cfg-firebase-project-id')?.value || '').trim();
+      const apiKey = (document.getElementById('cfg-firebase-api-key')?.value || '').trim();
+
+      if (!databaseURL && !projectId) {
+        alert('Vui lòng nhập Database URL hoặc Project ID của Firebase!');
+        return;
+      }
+
+      window.MrsFirebase.saveConfig({ databaseURL, projectId, apiKey });
+      showToast('Đang kết nối lại với Firebase Database...');
+      window.MrsFirebase.init();
+      closeCloudConfigModal();
+    });
+
+    // Reset default Cloud config
+    document.getElementById('btn-cloud-reset-default')?.addEventListener('click', () => {
+      if (confirm('Khôi phục cấu hình Firebase Cloud mặc định của hệ thống?')) {
+        localStorage.removeItem('mrs_firebase_config_v1');
+        if (window.MrsFirebase) {
+          const cfg = window.MrsFirebase.getConfig();
+          const inputUrl = document.getElementById('cfg-firebase-db-url');
+          const inputProj = document.getElementById('cfg-firebase-project-id');
+          const inputKey = document.getElementById('cfg-firebase-api-key');
+          if (inputUrl) inputUrl.value = cfg.databaseURL || '';
+          if (inputProj) inputProj.value = cfg.projectId || '';
+          if (inputKey) inputKey.value = cfg.apiKey || '';
+          window.MrsFirebase.init();
+        }
+        showToast('Đã khôi phục cấu hình mặc định');
+      }
+    });
+
+    // Listen to realtime sync events from Cloud
+    window.addEventListener('mrs-data-synced', (e) => {
+      console.log('[App] Dữ liệu đã được tự động đồng bộ từ Cloud Realtime:', e.detail);
+      updateHistoryBadge();
+      if (document.getElementById('history-modal')?.classList.contains('active')) {
+        renderHistoryList();
+        renderStatistics();
+      }
+    });
+
     // Update history badge count
     updateHistoryBadge();
 
     // Initial calculation
     calculateScores();
+
+    // Khởi động kết nối Firebase Realtime Cloud
+    if (window.MrsFirebase) {
+      window.MrsFirebase.init();
+    }
   });
 
   // Handle radio option change
@@ -1813,98 +2911,225 @@
     if (countEl) countEl.textContent = records.length;
   }
 
-  // Save current record to iPad localStorage
-  function saveRecord() {
-    const patientName = document.getElementById('patient-name').value.trim();
-    const patientBirthYear = document.getElementById('patient-birthyear').value.trim();
-    const evalDate = document.getElementById('eval-date').value;
+  // Symptoms configuration matching the medical sheet
+  const SYMPTOMS_DATA = [
+    { id: 'q1', group: 'mrs1', no: '1/', name: 'Tâm trạng trầm cảm', desc: '(cảm giác tệ hại, buồn, dễ rơi nước mắt, thiếu sức sống, thay đổi tâm trạng)' },
+    { id: 'q2', group: 'mrs1', no: '2/', name: 'Dễ bị kích thích', desc: '(cảm giác lo lắng, căng thẳng nội tâm, cảm giác hung hăng, dễ gây sự)' },
+    { id: 'q3', group: 'mrs1', no: '3/', name: 'Lo âu, bồn chồn', desc: '(cảm giác bất an bên trong, hoang mang, hoảng sợ)' },
+    { id: 'q4', group: 'mrs1', no: '4/', name: 'Mệt mỏi về thể chất và tinh thần', desc: '(thụ động, giảm trí nhớ, giảm tập trung, hay quên)' },
+    { id: 'q5', group: 'mrs2', no: '1/', name: 'Bốc hỏa, đổ mồ hôi', desc: '(tình trạng ra mồ hôi)' },
+    { id: 'q6', group: 'mrs2', no: '2/', name: 'Khó chịu ở tim', desc: '(cảm thấy nhịp tim bất thường, tim đập chậm, tim đập nhanh, hồi hộp)' },
+    { id: 'q7', group: 'mrs2', no: '3/', name: 'Rối loạn về giấc ngủ', desc: '(khó khăn trong việc đi vào giấc ngủ, ngủ chập chờn không ngon giấc, thức dậy sớm...)' },
+    { id: 'q8', group: 'mrs2', no: '4/', name: 'Những khó chịu về cơ, khớp', desc: '(đau khớp, những than phiền tương tự như bệnh thấp khớp)' },
+    { id: 'q9', group: 'mrs3', no: '1/', name: 'Rối loạn tình dục', desc: '(thay đổi về ham muốn tình dục, hoạt động tình dục và thỏa mãn tình dục)' },
+    { id: 'q10', group: 'mrs3', no: '2/', name: 'Rối loạn tiết niệu', desc: '(đi tiểu khó, tiểu lắt nhắt, tiểu không kiểm soát)' },
+    { id: 'q11', group: 'mrs3', no: '3/', name: 'Triệu chứng do khô âm đạo', desc: '(cảm giác khô và nóng rát âm đạo, đau khi giao hợp)' }
+  ];
 
-    const answeredCount = Object.keys(currentState.scores).length;
-    if (answeredCount < MRS_CONFIG.totalQuestions) {
-      const remaining = MRS_CONFIG.totalQuestions - answeredCount;
-      const proceed = confirm(`Còn ${remaining} câu hỏi chưa được chọn (sẽ mặc định hiểu là 0 - không có triệu chứng). Bạn có muốn tiếp tục lưu?`);
-      if (!proceed) return;
+  // Global state
+  let activePreviewRecord = null;
 
-      // Fill remaining with 0
-      for (let i = 1; i <= MRS_CONFIG.totalQuestions; i++) {
-        const q = 'q' + i;
-        if (currentState.scores[q] === undefined) {
-          currentState.scores[q] = 0;
-          const radio = document.querySelector(`input[name="${q}"][value="0"]`);
-          if (radio) radio.checked = true;
-        }
-      }
-      calculateScores();
-    }
-
-    const record = {
-      id: 'mrs_' + Date.now(),
-      createdAt: new Date().toISOString(),
-      name: patientName || 'Chưa đặt tên',
-      birthYear: patientBirthYear || '--',
-      date: evalDate || new Date().toISOString().split('T')[0],
-      scores: { ...currentState.scores },
-      mrs1: currentState.mrs1,
-      mrs2: currentState.mrs2,
-      mrs3: currentState.mrs3,
-      total: currentState.total,
-      severity: currentState.severity
-    };
-
-    const records = getStoredRecords();
-    records.unshift(record); // newest first
-    setStoredRecords(records);
-
-    showToast(`Đã hoàn tất đánh giá cho "${record.name}" thành công!`);
+  // Patient Identity Helper (groups visits belonging to the same patient)
+  function getPatientKey(name, birthYear) {
+    const cleanName = (name || '')
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/g, "");
+    const cleanYear = (birthYear || '').toString().trim();
+    return cleanName ? `${cleanName}_${cleanYear}` : `unknown_${Date.now()}`;
   }
 
-  // Open History Modal
+  // Open & Close History Modal
   function openHistoryModal() {
     const modal = document.getElementById('history-modal');
     modal.classList.add('active');
+    initStatisticsDropdowns();
     renderHistoryList();
+    renderStatistics();
   }
 
-  // Close History Modal
   function closeHistoryModal() {
-    const modal = document.getElementById('history-modal');
-    modal.classList.remove('active');
+    document.getElementById('history-modal').classList.remove('active');
+    isBackupUnlocked = false;
+    executeSwitchTab('list');
   }
 
   function handleModalOverlayClick(e) {
-    if (e.target.id === 'history-modal') {
-      closeHistoryModal();
+    if (e.target.id === 'history-modal') closeHistoryModal();
+  }
+
+  // Tab switching inside History Modal (Protected with Admin Password "thanhta92")
+  const ADMIN_PASSWORD = 'thanhta92';
+  let isBackupUnlocked = false;
+  let authSuccessCallback = null;
+
+  function switchModalTab(tabId) {
+    if (tabId === 'backup') {
+      if (!isBackupUnlocked) {
+        openAuthModal(() => {
+          isBackupUnlocked = true;
+          executeSwitchTab('backup');
+        });
+        return;
+      }
+    }
+    executeSwitchTab(tabId);
+  }
+
+  function executeSwitchTab(tabId) {
+    ['list', 'stats', 'backup'].forEach(t => {
+      const btn = document.getElementById(`tab-btn-${t}`);
+      const pane = document.getElementById(`pane-${t}`);
+      if (btn) btn.classList.toggle('active', t === tabId);
+      if (pane) pane.classList.toggle('active', t === tabId);
+    });
+
+    if (tabId === 'stats') {
+      renderStatistics();
+    } else if (tabId === 'list') {
+      renderHistoryList();
     }
   }
 
-  // Render History List
+  function openAuthModal(onSuccess) {
+    authSuccessCallback = onSuccess;
+    const modal = document.getElementById('modal-admin-auth');
+    const input = document.getElementById('admin-auth-password');
+    const errorEl = document.getElementById('admin-auth-error');
+    if (input) input.value = '';
+    if (errorEl) errorEl.style.display = 'none';
+    if (modal) modal.classList.add('active');
+    setTimeout(() => input?.focus(), 150);
+  }
+
+  function closeAuthModal() {
+    const modal = document.getElementById('modal-admin-auth');
+    if (modal) modal.classList.remove('active');
+    authSuccessCallback = null;
+  }
+
+  function handleAuthModalOverlayClick(e) {
+    if (e.target && e.target.id === 'modal-admin-auth') {
+      closeAuthModal();
+    }
+  }
+
+  function confirmAdminAuth() {
+    const input = document.getElementById('admin-auth-password');
+    const errorEl = document.getElementById('admin-auth-error');
+    const val = (input?.value || '').trim();
+
+    if (val === ADMIN_PASSWORD) {
+      if (errorEl) errorEl.style.display = 'none';
+      closeAuthModal();
+      showToast('Xác thực quyền quản trị thành công!');
+      if (typeof authSuccessCallback === 'function') {
+        const cb = authSuccessCallback;
+        authSuccessCallback = null;
+        cb();
+      }
+    } else {
+      if (errorEl) {
+        errorEl.style.display = 'block';
+        errorEl.textContent = '⚠️ Mật khẩu không chính xác. Vui lòng thử lại!';
+      }
+      if (input) {
+        input.classList.add('shake-anim');
+        setTimeout(() => input.classList.remove('shake-anim'), 400);
+        input.select();
+      }
+    }
+  }
+
+  function toggleAuthPasswordVisibility() {
+    const input = document.getElementById('admin-auth-password');
+    const btn = document.getElementById('btn-toggle-auth-pwd');
+    if (!input) return;
+    if (input.type === 'password') {
+      input.type = 'text';
+      if (btn) btn.textContent = '🔒';
+    } else {
+      input.type = 'password';
+      if (btn) btn.textContent = '👁️';
+    }
+  }
+
+  // ==========================================================================
+  // TAB 1: ADVANCED MULTI-FIELD SEARCH & EVALUATION LIST
+  // ==========================================================================
+  function handleFilterChange() {
+    renderHistoryList();
+  }
+
+  function resetFilters() {
+    document.getElementById('filter-name').value = '';
+    document.getElementById('filter-birthyear').value = '';
+    document.getElementById('filter-date').value = '';
+    renderHistoryList();
+  }
+
   function renderHistoryList() {
     const container = document.getElementById('history-list-container');
-    const query = (document.getElementById('history-search').value || '').toLowerCase().trim();
-    const records = getStoredRecords();
+    const nameFilter = (document.getElementById('filter-name')?.value || '').toLowerCase().trim();
+    const yearFilter = (document.getElementById('filter-birthyear')?.value || '').trim();
+    const dateFilter = (document.getElementById('filter-date')?.value || '').trim();
 
-    if (records.length === 0) {
+    const allRecords = getStoredRecords();
+
+    // Calculate visits sequence per patient across all records
+    const patientVisitsMap = {};
+    // Sort chronological first to determine visit numbers
+    const chronological = [...allRecords].sort((a, b) => new Date(a.date || a.createdAt) - new Date(b.date || b.createdAt));
+    chronological.forEach(r => {
+      const pKey = r.patientKey || getPatientKey(r.name, r.birthYear);
+      if (!patientVisitsMap[pKey]) patientVisitsMap[pKey] = [];
+      patientVisitsMap[pKey].push(r.id);
+    });
+
+    // Update tab count badge
+    const badge = document.getElementById('tab-count-badge');
+    if (badge) badge.textContent = allRecords.length;
+
+    if (allRecords.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">📋</div>
-          <div style="font-weight: 600; margin-bottom: 4px;">Chưa có lịch sử đánh giá</div>
-          <div style="font-size: 0.85rem;">Các kết quả sau khi bấm "Hoàn tất đánh giá" sẽ hiển thị tại đây để bạn xem lại bất cứ lúc nào.</div>
+          <div style="font-weight: 700; margin-bottom: 4px; font-size: 1rem;">Chưa có phiếu đánh giá nào</div>
+          <div style="font-size: 0.85rem; max-width: 380px; margin: 0 auto;">
+            Sau khi điền phiếu trên màn hình và bấm <strong>"Hoàn tất đánh giá"</strong>, kết quả sẽ được lưu trữ tự động tại đây.
+          </div>
         </div>
       `;
+      document.getElementById('filter-count-cases').textContent = '0';
+      document.getElementById('filter-count-patients').textContent = '0';
       return;
     }
 
-    const filtered = records.filter(r => {
-      const nameMatch = r.name.toLowerCase().includes(query);
-      const dateMatch = (r.date || '').includes(query);
-      return nameMatch || dateMatch;
+    // Filter records
+    const filtered = allRecords.filter(r => {
+      const pName = (r.name || '').toLowerCase();
+      const pYear = (r.birthYear || r.age || '').toString();
+      const pDate = r.date || '';
+
+      const matchName = !nameFilter || pName.includes(nameFilter) || 
+        pName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(nameFilter.normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
+      const matchYear = !yearFilter || pYear.includes(yearFilter);
+      const matchDate = !dateFilter || pDate === dateFilter;
+
+      return matchName && matchYear && matchDate;
     });
+
+    // Count unique patients in filtered set
+    const uniquePatientsCount = new Set(filtered.map(r => r.patientKey || getPatientKey(r.name, r.birthYear))).size;
+    document.getElementById('filter-count-cases').textContent = filtered.length;
+    document.getElementById('filter-count-patients').textContent = uniquePatientsCount;
 
     if (filtered.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
-          <div style="font-weight: 600;">Không tìm thấy kết quả phù hợp</div>
-          <div style="font-size: 0.85rem; margin-top: 4px;">Thử tìm kiếm với từ khóa khác.</div>
+          <div style="font-weight: 700; font-size: 0.95rem;">Không tìm thấy ca nào phù hợp</div>
+          <div style="font-size: 0.85rem; margin-top: 4px;">Vui lòng thử tìm kiếm lại với điều kiện lọc khác hoặc bấm "Xoá lọc".</div>
         </div>
       `;
       return;
@@ -1912,28 +3137,46 @@
 
     container.innerHTML = filtered.map(r => {
       const formattedDate = r.date ? r.date.split('-').reverse().join('/') : '--';
-      const yearText = (r.birthYear && r.birthYear !== '--') ? `(Năm sinh: ${r.birthYear})` : (r.age && r.age !== '--' ? `(${r.age} tuổi)` : '');
+      const yearText = (r.birthYear && r.birthYear !== '--') ? `(Năm sinh: ${r.birthYear})` : '';
+
+      // Determine visit badge (e.g. Lần 2/3)
+      const pKey = r.patientKey || getPatientKey(r.name, r.birthYear);
+      const visits = patientVisitsMap[pKey] || [];
+      const visitIndex = visits.indexOf(r.id) + 1;
+      const totalVisits = visits.length;
+      const visitBadge = totalVisits > 1 
+        ? `<span class="patient-visit-pill" title="Bệnh nhân này đã đánh giá ${totalVisits} lần">Lần đánh giá ${visitIndex}/${totalVisits}</span>`
+        : `<span class="patient-visit-pill" style="background: #f0f7f7; color: #437172; border-color: #d1e5e5;">Đánh giá lần 1</span>`;
+
       return `
         <div class="history-card">
           <div style="flex: 1;">
             <div class="history-info-main">
               <span>${escapeHtml(r.name)}</span>
-              <span style="font-size: 0.82rem; font-weight: normal; color: var(--text-muted);">${yearText}</span>
+              <span style="font-size: 0.85rem; font-weight: normal; color: var(--text-muted);">${yearText}</span>
+              ${visitBadge}
             </div>
             <div class="history-info-meta">
-              <span>📅 Ngày đánh giá: ${formattedDate}</span> • 
-              <span style="font-weight: 600; color: ${getSeverityColor(r.total)}">${r.severity || ''}</span>
+              <span>📅 Ngày đánh giá: <strong>${formattedDate}</strong></span> • 
+              <span style="font-weight: 700; color: ${getSeverityColor(r.total)}">${r.severity || ''}</span>
             </div>
             <div class="history-scores">
-              MRS1: <strong>${r.mrs1}</strong> | MRS2: <strong>${r.mrs2}</strong> | MRS3: <strong>${r.mrs3}</strong> | Tổng: <strong>${r.total} điểm</strong>
+              MRS1 (Tâm lý): <strong>${r.mrs1}</strong> | MRS2 (TKTV): <strong>${r.mrs2}</strong> | MRS3 (Niệu dục): <strong>${r.mrs3}</strong> | Tổng: <strong style="font-size: 0.92rem; color: #1e6869;">${r.total} điểm</strong>
             </div>
           </div>
 
           <div class="history-actions">
-            <button type="button" class="btn btn-outline" style="padding: 6px 10px; font-size: 0.82rem;" onclick="loadRecord('${r.id}')" title="Xem lại phiếu này">
+            <button type="button" class="btn btn-teal" style="padding: 6px 12px; font-size: 0.82rem;" onclick="viewRecordSheet('${r.id}')" title="Xem phiếu và In hoặc Xuất file PDF">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span>Xem / In PDF</span>
+            </button>
+            <button type="button" class="btn btn-outline" style="padding: 6px 10px; font-size: 0.82rem;" onclick="loadRecord('${r.id}')" title="Nạp lại vào biểu mẫu chính">
               Mở lại
             </button>
-            <button type="button" class="btn btn-outline" style="padding: 6px 8px; font-size: 0.82rem; color: #ad2b2b;" onclick="deleteRecord('${r.id}')" title="Xoá">
+            <button type="button" class="btn btn-outline" style="padding: 6px 8px; font-size: 0.82rem; color: #ad2b2b;" onclick="deleteRecord('${r.id}')" title="Xoá ca này">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="3 6 5 6 21 6"></polyline>
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -1943,6 +3186,600 @@
         </div>
       `;
     }).join('');
+  }
+
+  // ==========================================================================
+  // TAB 2: ADVANCED STATISTICS & PERIOD REPORTING
+  // ==========================================================================
+  function initStatisticsDropdowns() {
+    const records = getStoredRecords();
+    const yearSelect = document.getElementById('stats-year-select');
+    const monthSelect = document.getElementById('stats-month-select');
+
+    if (!yearSelect || !monthSelect) return;
+
+    // Month options 1 to 12
+    const currentMonth = new Date().getMonth() + 1;
+    monthSelect.innerHTML = Array.from({ length: 12 }, (_, i) => {
+      const m = i + 1;
+      const mPad = m < 10 ? '0' + m : '' + m;
+      return `<option value="${mPad}" ${m === currentMonth ? 'selected' : ''}>Tháng ${m}</option>`;
+    }).join('');
+
+    // Collect all available years in data
+    const yearsSet = new Set();
+    const currentYear = new Date().getFullYear();
+    yearsSet.add(currentYear);
+    records.forEach(r => {
+      if (r.date && r.date.length >= 4) {
+        yearsSet.add(parseInt(r.date.substring(0, 4), 10));
+      }
+    });
+
+    const sortedYears = Array.from(yearsSet).sort((a, b) => b - a);
+    yearSelect.innerHTML = sortedYears.map(y => `
+      <option value="${y}" ${y === currentYear ? 'selected' : ''}>Năm ${y}</option>
+    `).join('');
+  }
+
+  function handleStatsPeriodChange() {
+    const periodType = document.getElementById('stats-period-type').value;
+    const monthSelect = document.getElementById('stats-month-select');
+    const yearSelect = document.getElementById('stats-year-select');
+
+    if (periodType === 'all') {
+      monthSelect.style.display = 'none';
+      yearSelect.style.display = 'none';
+    } else if (periodType === 'year') {
+      monthSelect.style.display = 'none';
+      yearSelect.style.display = 'inline-block';
+    } else {
+      monthSelect.style.display = 'inline-block';
+      yearSelect.style.display = 'inline-block';
+    }
+
+    renderStatistics();
+  }
+
+  function getFilteredStatsRecords() {
+    const records = getStoredRecords();
+    const periodType = document.getElementById('stats-period-type')?.value || 'month';
+    const selectedYear = document.getElementById('stats-year-select')?.value || new Date().getFullYear().toString();
+    const selectedMonth = document.getElementById('stats-month-select')?.value || '10';
+
+    if (periodType === 'all') {
+      return { records, periodLabel: 'Toàn bộ thời gian' };
+    }
+
+    if (periodType === 'year') {
+      const filtered = records.filter(r => (r.date || '').startsWith(selectedYear));
+      return { records: filtered, periodLabel: `Cả năm ${selectedYear}` };
+    }
+
+    // month & year
+    const prefix = `${selectedYear}-${selectedMonth}`;
+    const filtered = records.filter(r => (r.date || '').startsWith(prefix));
+    return { records: filtered, periodLabel: `Tháng ${parseInt(selectedMonth, 10)}/${selectedYear}` };
+  }
+
+  function renderStatistics() {
+    const { records, periodLabel } = getFilteredStatsRecords();
+    const totalCases = records.length;
+
+    // Unique patients using patientKey
+    const uniquePatientsSet = new Set(records.map(r => r.patientKey || getPatientKey(r.name, r.birthYear)));
+    const totalPatients = uniquePatientsSet.size;
+
+    const avgVisits = totalPatients > 0 ? (totalCases / totalPatients).toFixed(1) : '0';
+
+    let sumTotal = 0;
+    let sumMrs1 = 0;
+    let sumMrs2 = 0;
+    let sumMrs3 = 0;
+
+    let countNone = 0;
+    let countMild = 0;
+    let countModerate = 0;
+    let countSevere = 0;
+
+    records.forEach(r => {
+      sumTotal += (r.total || 0);
+      sumMrs1 += (r.mrs1 || 0);
+      sumMrs2 += (r.mrs2 || 0);
+      sumMrs3 += (r.mrs3 || 0);
+
+      const t = r.total || 0;
+      if (t <= 4) countNone++;
+      else if (t <= 8) countMild++;
+      else if (t <= 16) countModerate++;
+      else countSevere++;
+    });
+
+    const avgScore = totalCases > 0 ? (sumTotal / totalCases).toFixed(1) : '0';
+    const avgMrs1 = totalCases > 0 ? (sumMrs1 / totalCases).toFixed(1) : '0';
+    const avgMrs2 = totalCases > 0 ? (sumMrs2 / totalCases).toFixed(1) : '0';
+    const avgMrs3 = totalCases > 0 ? (sumMrs3 / totalCases).toFixed(1) : '0';
+
+    // Update KPIs
+    document.getElementById('stat-total-cases').textContent = totalCases;
+    document.getElementById('stat-total-patients').textContent = totalPatients;
+    document.getElementById('stat-avg-visits').textContent = avgVisits;
+    document.getElementById('stat-avg-score').textContent = avgScore;
+
+    // Update Severity Bar Chart
+    const pct = (c) => totalCases > 0 ? Math.round((c / totalCases) * 100) : 0;
+
+    document.getElementById('bar-sev-none').style.width = `${pct(countNone)}%`;
+    document.getElementById('text-sev-none').textContent = `${countNone} (${pct(countNone)}%)`;
+
+    document.getElementById('bar-sev-mild').style.width = `${pct(countMild)}%`;
+    document.getElementById('text-sev-mild').textContent = `${countMild} (${pct(countMild)}%)`;
+
+    document.getElementById('bar-sev-moderate').style.width = `${pct(countModerate)}%`;
+    document.getElementById('text-sev-moderate').textContent = `${countModerate} (${pct(countModerate)}%)`;
+
+    document.getElementById('bar-sev-severe').style.width = `${pct(countSevere)}%`;
+    document.getElementById('text-sev-severe').textContent = `${countSevere} (${pct(countSevere)}%)`;
+
+    // Update Subtotals Bar Chart
+    document.getElementById('bar-grp-mrs1').style.width = `${(avgMrs1 / 16) * 100}%`;
+    document.getElementById('text-grp-mrs1').textContent = `${avgMrs1} / 16`;
+
+    document.getElementById('bar-grp-mrs2').style.width = `${(avgMrs2 / 16) * 100}%`;
+    document.getElementById('text-grp-mrs2').textContent = `${avgMrs2} / 16`;
+
+    document.getElementById('bar-grp-mrs3').style.width = `${(avgMrs3 / 12) * 100}%`;
+    document.getElementById('text-grp-mrs3').textContent = `${avgMrs3} / 12`;
+
+    // Render Table
+    document.getElementById('stats-table-count').textContent = totalCases;
+    const tbody = document.getElementById('stats-table-tbody');
+
+    if (records.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="10" style="padding: 24px; color: var(--text-muted);">
+            Không có ca đánh giá nào trong kỳ ${escapeHtml(periodLabel)}.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = records.map((r, idx) => {
+      const formattedDate = r.date ? r.date.split('-').reverse().join('/') : '--';
+      return `
+        <tr>
+          <td>${idx + 1}</td>
+          <td style="text-align: left; font-weight: 700;">${escapeHtml(r.name)}</td>
+          <td>${r.birthYear || '--'}</td>
+          <td>${formattedDate}</td>
+          <td><strong>${r.mrs1}</strong></td>
+          <td><strong>${r.mrs2}</strong></td>
+          <td><strong>${r.mrs3}</strong></td>
+          <td style="font-weight: 800; color: var(--primary-teal-dark);">${r.total}</td>
+          <td style="font-weight: 700; color: ${getSeverityColor(r.total)};">${r.severity || ''}</td>
+          <td>
+            <button type="button" class="link-action" style="font-size: 0.8rem;" onclick="viewRecordSheet('${r.id}')">
+              Xem PDF
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // Export Statistics & Evaluated Cases to Excel (CSV with UTF-8 BOM)
+  function exportStatisticsCSV() {
+    const { records, periodLabel } = getFilteredStatsRecords();
+    if (records.length === 0) {
+      alert(`Không có dữ liệu ca đánh giá nào trong kỳ: ${periodLabel}`);
+      return;
+    }
+
+    const uniquePatientsCount = new Set(records.map(r => r.patientKey || getPatientKey(r.name, r.birthYear))).size;
+
+    let csv = '\uFEFF'; // UTF-8 BOM for Excel
+    csv += `"BÁO CÁO THỐNG KÊ KẾT QUẢ ĐÁNH GIÁ MÃN KINH - MRS (MENOPAUSE RATING SCALE)"\n`;
+    csv += `"Kỳ báo cáo:","${periodLabel}"\n`;
+    csv += `"Ngày xuất báo cáo:","${new Date().toLocaleDateString('vi-VN')} ${new Date().toLocaleTimeString('vi-VN')}"\n`;
+    csv += `"Tổng số ca đánh giá:","${records.length}"\n`;
+    csv += `"Tổng số bệnh nhân duy nhất:","${uniquePatientsCount}"\n\n`;
+
+    // Headers
+    csv += `"STT","Mã ca","Họ và tên","Năm sinh","Ngày đánh giá","Điểm MRS1 (Tâm lý)","Điểm MRS2 (TK thực vật)","Điểm MRS3 (Niệu dục)","Tổng điểm MRS","Mức độ",`;
+    csv += `"Q1: Trầm cảm","Q2: Dễ kích thích","Q3: Lo âu","Q4: Mệt mỏi","Q5: Bốc hỏa","Q6: Khó chịu tim","Q7: Mất ngủ","Q8: Đau khớp","Q9: RL tình dục","Q10: RL tiết niệu","Q11: Khô âm đạo"\n`;
+
+    // Data rows
+    records.forEach((r, idx) => {
+      const q = r.scores || {};
+      csv += `"${idx + 1}",`;
+      csv += `"${r.id}",`;
+      csv += `"${(r.name || '').replace(/"/g, '""')}",`;
+      csv += `"${r.birthYear || ''}",`;
+      csv += `"${r.date ? r.date.split('-').reverse().join('/') : ''}",`;
+      csv += `"${r.mrs1 || 0}",`;
+      csv += `"${r.mrs2 || 0}",`;
+      csv += `"${r.mrs3 || 0}",`;
+      csv += `"${r.total || 0}",`;
+      csv += `"${r.severity || ''}",`;
+      for (let i = 1; i <= 11; i++) {
+        csv += `"${q['q' + i] !== undefined ? q['q' + i] : 0}"${i === 11 ? '' : ','}`;
+      }
+      csv += `\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    const filename = `Bao_Cao_MRS_${periodLabel.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}.csv`;
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast(`Đã xuất báo cáo Excel (.CSV) thành công!`);
+  }
+
+  // Print Formatted Statistics Report
+  function printStatisticsReport() {
+    const { records, periodLabel } = getFilteredStatsRecords();
+    if (records.length === 0) {
+      alert(`Không có dữ liệu ca đánh giá nào trong kỳ: ${periodLabel}`);
+      return;
+    }
+
+    const uniquePatientsCount = new Set(records.map(r => r.patientKey || getPatientKey(r.name, r.birthYear))).size;
+    const avgVisits = uniquePatientsCount > 0 ? (records.length / uniquePatientsCount).toFixed(1) : '0';
+    let sumTotal = 0;
+    records.forEach(r => sumTotal += (r.total || 0));
+    const avgScore = (sumTotal / records.length).toFixed(1);
+
+    const reportContainer = document.getElementById('report-print-container');
+    reportContainer.innerHTML = `
+      <div style="font-family: Arial, sans-serif; color: #000; padding: 20px;">
+        <div style="text-align: center; border-bottom: 2px solid #368f91; padding-bottom: 12px; margin-bottom: 20px;">
+          <h2 style="margin: 0; color: #266b6c; font-size: 1.5rem;">BÁO CÁO THỐNG KÊ ĐÁNH GIÁ MÃN KINH - MRS</h2>
+          <div style="font-size: 1.1rem; margin-top: 4px; font-weight: bold;">Kỳ báo cáo: ${escapeHtml(periodLabel)}</div>
+          <div style="font-size: 0.85rem; color: #666; margin-top: 4px;">Ngày lập báo cáo: ${new Date().toLocaleDateString('vi-VN')}</div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; background: #f0f7f7; padding: 12px 18px; border-radius: 6px; margin-bottom: 20px;">
+          <div>Tổng số ca đánh giá: <strong>${records.length}</strong></div>
+          <div>Số bệnh nhân được đánh giá: <strong>${uniquePatientsCount}</strong></div>
+          <div>Tần suất trung bình: <strong>${avgVisits} lượt/BN</strong></div>
+          <div>Điểm MRS trung bình: <strong>${avgScore} / 44</strong></div>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px;">
+          <thead>
+            <tr style="background: #399194; color: #fff;">
+              <th style="border: 1px solid #333; padding: 6px;">STT</th>
+              <th style="border: 1px solid #333; padding: 6px; text-align: left;">Họ & tên</th>
+              <th style="border: 1px solid #333; padding: 6px;">Năm sinh</th>
+              <th style="border: 1px solid #333; padding: 6px;">Ngày đánh giá</th>
+              <th style="border: 1px solid #333; padding: 6px;">MRS1</th>
+              <th style="border: 1px solid #333; padding: 6px;">MRS2</th>
+              <th style="border: 1px solid #333; padding: 6px;">MRS3</th>
+              <th style="border: 1px solid #333; padding: 6px;">Tổng</th>
+              <th style="border: 1px solid #333; padding: 6px;">Mức độ</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${records.map((r, i) => `
+              <tr style="text-align: center;">
+                <td style="border: 1px solid #333; padding: 5px;">${i + 1}</td>
+                <td style="border: 1px solid #333; padding: 5px; text-align: left; font-weight: bold;">${escapeHtml(r.name)}</td>
+                <td style="border: 1px solid #333; padding: 5px;">${r.birthYear || '--'}</td>
+                <td style="border: 1px solid #333; padding: 5px;">${r.date ? r.date.split('-').reverse().join('/') : '--'}</td>
+                <td style="border: 1px solid #333; padding: 5px;">${r.mrs1}</td>
+                <td style="border: 1px solid #333; padding: 5px;">${r.mrs2}</td>
+                <td style="border: 1px solid #333; padding: 5px;">${r.mrs3}</td>
+                <td style="border: 1px solid #333; padding: 5px; font-weight: bold;">${r.total}</td>
+                <td style="border: 1px solid #333; padding: 5px;">${r.severity || ''}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    document.body.classList.add('is-printing-report');
+    window.print();
+    window.onafterprint = () => {
+      document.body.classList.remove('is-printing-report');
+    };
+  }
+
+  // ==========================================================================
+  // VIEW & PRINT SINGLE RECORD AS PDF / MEDICAL FORM
+  // ==========================================================================
+  function viewRecordSheet(recordId) {
+    const records = getStoredRecords();
+    const record = records.find(r => r.id === recordId);
+    if (!record) return;
+
+    activePreviewRecord = record;
+    document.getElementById('preview-patient-title').textContent = `${record.name} (${record.birthYear || '--'})`;
+
+    const formattedDate = record.date ? record.date.split('-').reverse().join('/') : '--';
+    const q = record.scores || {};
+
+    const container = document.getElementById('preview-sheet-content');
+    container.innerHTML = `
+      <!-- Header Banner -->
+      <div class="sheet-header" style="padding: 16px;">
+        <h2 class="sheet-title" style="font-size: 1.45rem;">Đánh giá tình trạng mãn kinh</h2>
+        <div class="sheet-subtitle" style="font-size: 1.05rem;">MRS (Menopause Rating Scale)</div>
+      </div>
+
+      <div class="sheet-body" style="padding: 18px 22px;">
+        <!-- Patient Info Card -->
+        <div class="patient-info-card" style="margin-bottom: 14px;">
+          <div class="info-field">
+            <span class="info-label">Họ & tên:</span>
+            <span style="font-weight: 700; font-size: 1.05rem; color: #174244;">${escapeHtml(record.name)}</span>
+          </div>
+          <div class="info-field">
+            <span class="info-label">Năm sinh:</span>
+            <span style="font-weight: 700; font-size: 1.05rem; color: #174244;">${record.birthYear || '--'}</span>
+          </div>
+          <div class="info-field">
+            <span class="info-label">Ngày đánh giá:</span>
+            <span style="font-weight: 700; font-size: 1.05rem; color: #174244;">${formattedDate}</span>
+          </div>
+        </div>
+
+        <div class="instruction-box" style="margin-bottom: 12px;">
+          <p>Những triệu chứng nào sau đây hiện tại Chị/Cô đang gặp phải? Xin vui lòng tích chọn vào ô điểm thích hợp để được Bác sĩ hướng dẫn cách chăm sóc sức khoẻ mãn kinh.</p>
+          <p>Các triệu chứng nào không gặp, xin vui lòng tích chọn vào số <strong>“0” (Không)</strong>.</p>
+        </div>
+
+        <!-- Rating Visual Guide (Visual Scale) -->
+        <div class="rating-visual-guide" style="margin: 4px 0 16px;" aria-hidden="true">
+          <div class="visual-guide-track"></div>
+          <div class="visual-guide-steps">
+            <div class="visual-step" data-level="0"><div class="step-score-circle">0</div><div class="step-label">Hoàn toàn<br><span>KHÔNG</span></div></div>
+            <div class="visual-step" data-level="1"><div class="step-score-circle">1</div><div class="step-label">Triệu chứng<br><span>NHẸ</span></div></div>
+            <div class="visual-step" data-level="2"><div class="step-score-circle">2</div><div class="step-label">Triệu chứng<br><span>TRUNG BÌNH</span></div></div>
+            <div class="visual-step" data-level="3"><div class="step-score-circle">3</div><div class="step-label">Triệu chứng<br><span>NẶNG</span></div></div>
+            <div class="visual-step" data-level="4"><div class="step-score-circle">4</div><div class="step-label">Triệu chứng<br><span>RẤT NẶNG</span></div></div>
+          </div>
+        </div>
+
+        <!-- Evaluation Table with Active Points Filled -->
+        <div class="mrs-table-container">
+          <table class="mrs-table">
+            <colgroup>
+              <col class="col-symptom">
+              <col class="col-score"><col class="col-score"><col class="col-score"><col class="col-score"><col class="col-score">
+            </colgroup>
+            
+            <!-- Group 1 -->
+            <thead><tr class="group-header-row"><th colspan="6">NHÓM TRIỆU CHỨNG TÂM LÝ</th></tr></thead>
+            <tbody>
+              ${renderPreviewGroupRows(['q1', 'q2', 'q3', 'q4'], q)}
+            </tbody>
+
+            <!-- Group 2 -->
+            <thead><tr class="group-header-row"><th colspan="6">NHÓM TRIỆU CHỨNG RỐI LOẠN THẦN KINH THỰC VẬT</th></tr></thead>
+            <tbody>
+              ${renderPreviewGroupRows(['q5', 'q6', 'q7', 'q8'], q)}
+            </tbody>
+
+            <!-- Group 3 -->
+            <thead><tr class="group-header-row"><th colspan="6">NHÓM TRIỆU CHỨNG NIỆU DỤC</th></tr></thead>
+            <tbody>
+              ${renderPreviewGroupRows(['q9', 'q10', 'q11'], q)}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-section" style="margin-top: 14px;">
+          <div class="summary-left">
+            <div class="summary-header">SỐ ĐIỂM TỪNG NHÓM TRIỆU CHỨNG</div>
+            <div class="summary-items">
+              <div class="summary-item">
+                <span class="summary-label">1/ Nhóm triệu chứng tâm lý, MRS1 =</span>
+                <span class="summary-val">${record.mrs1}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">2/ Nhóm triệu chứng rối loạn thần kinh thực vật, MRS2 =</span>
+                <span class="summary-val">${record.mrs2}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">3/ Nhóm triệu chứng niệu dục, MRS3 =</span>
+                <span class="summary-val">${record.mrs3}</span>
+              </div>
+            </div>
+          </div>
+          <div class="summary-right">
+            <div class="summary-header" style="text-align: center;">TỔNG SỐ ĐIỂM MRS</div>
+            <div class="summary-right-content">
+              <div class="total-score-badge" style="color: #1e6869;">${record.total}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('preview-sheet-modal').classList.add('active');
+    const pBody = document.getElementById('preview-modal-body');
+    if (pBody) pBody.scrollTop = 0;
+  }
+
+  function renderPreviewGroupRows(questionIds, scores) {
+    return questionIds.map(qid => {
+      const item = SYMPTOMS_DATA.find(s => s.id === qid);
+      const userVal = scores[qid] !== undefined ? scores[qid] : 0;
+
+      let scoreCols = '';
+      for (let s = 0; s <= 4; s++) {
+        const isSelected = userVal === s;
+        const selectedStyle = isSelected
+          ? `background: ${getSeverityColor(s)}; color: #fff; font-weight: 800; border-color: #1b5354; transform: scale(1.15); box-shadow: 0 2px 6px rgba(0,0,0,0.25);`
+          : `background: #fff; color: #739596; border-color: #cbe3e3;`;
+
+        scoreCols += `
+          <td class="score-cell">
+            <div class="score-circle" style="margin: 0 auto; ${selectedStyle}">
+              ${s}
+            </div>
+          </td>
+        `;
+      }
+
+      return `
+        <tr class="symptom-row">
+          <td class="symptom-title-cell">
+            <span class="symptom-name">${item.no} ${item.name}</span>
+            <span class="symptom-desc">${item.desc}</span>
+          </td>
+          ${scoreCols}
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function closePreviewModal() {
+    document.getElementById('preview-sheet-modal').classList.remove('active');
+    activePreviewRecord = null;
+  }
+
+  function handlePreviewOverlayClick(e) {
+    if (e.target.id === 'preview-sheet-modal') closePreviewModal();
+  }
+
+  // Print the active preview sheet (Triggers iOS / iPad Print / Save to PDF dialog)
+  function printActivePreview() {
+    if (!activePreviewRecord) return;
+    document.body.classList.add('is-printing-single-record');
+    window.print();
+    window.onafterprint = () => {
+      document.body.classList.remove('is-printing-single-record');
+    };
+  }
+
+  // ==========================================================================
+  // DATA BACKUP & RESTORE
+  // ==========================================================================
+  function exportHistoryJSON() {
+    const records = getStoredRecords();
+    if (records.length === 0) {
+      alert('Chưa có dữ liệu nào để xuất.');
+      return;
+    }
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `mrs_saoluu_ipad_${new Date().toISOString().split('T')[0]}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    showToast('Đã xuất tệp sao lưu JSON thành công!');
+  }
+
+  function handleImportJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const imported = JSON.parse(e.target.result);
+        if (!Array.isArray(imported)) {
+          alert('Tệp sao lưu không đúng định dạng JSON danh sách đánh giá MRS.');
+          return;
+        }
+
+        const currentRecords = getStoredRecords();
+        const existingIds = new Set(currentRecords.map(r => r.id));
+
+        let addCount = 0;
+        imported.forEach(r => {
+          if (r.id && !existingIds.has(r.id)) {
+            // Ensure patientKey exists
+            if (!r.patientKey) r.patientKey = getPatientKey(r.name, r.birthYear);
+            currentRecords.push(r);
+            existingIds.add(r.id);
+            addCount++;
+          }
+        });
+
+        // Sort newest first
+        currentRecords.sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
+        setStoredRecords(currentRecords);
+
+        renderHistoryList();
+        renderStatistics();
+        showToast(`Đã nhập thành công ${addCount} ca đánh giá mới vào iPad!`);
+      } catch (err) {
+        alert('Lỗi đọc tệp JSON: ' + err.message);
+      }
+      event.target.value = '';
+    };
+    reader.readAsText(file);
+  }
+
+  function deleteRecord(id) {
+    if (confirm('Bạn có chắc muốn xoá bản ghi đánh giá này?')) {
+      let records = getStoredRecords();
+      records = records.filter(r => r.id !== id);
+      setStoredRecords(records);
+      renderHistoryList();
+      renderStatistics();
+      showToast('Đã xoá bản ghi thành công');
+
+      // Tự động xoá trên Cloud
+      if (window.MrsFirebase && typeof window.MrsFirebase.deleteEvaluation === 'function') {
+        window.MrsFirebase.deleteEvaluation(id);
+      }
+    }
+  }
+
+  function clearAllHistory() {
+    if (confirm('CẢNH BÁO: Thao tác này sẽ xoá toàn bộ lịch sử các lần đánh giá đã lưu trên thiết bị này và Cloud. Bạn có chắc chắn?')) {
+      localStorage.removeItem(MRS_CONFIG.storageKey);
+      updateHistoryBadge();
+      renderHistoryList();
+      renderStatistics();
+      showToast('Đã xoá toàn bộ lịch sử');
+
+      // Tự động xoá trên Cloud
+      if (window.MrsFirebase && typeof window.MrsFirebase.clearAllEvaluations === 'function') {
+        window.MrsFirebase.clearAllEvaluations();
+      }
+    }
+  }
+
+  function updateHistoryBadge() {
+    const records = getStoredRecords();
+    const countEl = document.getElementById('history-count');
+    if (countEl) countEl.textContent = records.length;
+    const tabCount = document.getElementById('tab-count-badge');
+    if (tabCount) tabCount.textContent = records.length;
+  }
+
+  function getStoredRecords() {
+    try {
+      const data = localStorage.getItem(MRS_CONFIG.storageKey);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      console.error('LocalStorage error:', e);
+      return [];
+    }
+  }
+
+  function setStoredRecords(records) {
+    try {
+      localStorage.setItem(MRS_CONFIG.storageKey, JSON.stringify(records));
+      updateHistoryBadge();
+    } catch (e) {
+      console.error('LocalStorage write error:', e);
+      alert('Không thể ghi vào bộ nhớ thiết bị. Vui lòng kiểm tra dung lượng.');
+    }
   }
 
   // Load a saved record back into the active form
@@ -1984,44 +3821,140 @@
     }
   }
 
-  // Delete a single record
-  function deleteRecord(id) {
-    if (confirm('Bạn có chắc muốn xoá bản ghi đánh giá này?')) {
-      let records = getStoredRecords();
-      records = records.filter(r => r.id !== id);
-      setStoredRecords(records);
-      renderHistoryList();
-      showToast('Đã xoá bản ghi');
-    }
+  // Evaluation Unique Key Helper: Identifies identical combination of (Name + BirthYear + Date)
+  function getEvaluationKey(name, birthYear, date) {
+    const cleanName = (name || '')
+      .toLowerCase()
+      .trim()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/g, "");
+    const cleanYear = (birthYear || '').toString().trim();
+    const cleanDate = (date || '').toString().trim();
+    return `${cleanName}_${cleanYear}_${cleanDate}`;
   }
 
-  // Clear all history
-  function clearAllHistory() {
-    if (confirm('CẢNH BÁO: Thao tác này sẽ xoá toàn bộ lịch sử các lần đánh giá đã lưu trên iPad này. Bạn có chắc chắn?')) {
-      localStorage.removeItem(MRS_CONFIG.storageKey);
-      updateHistoryBadge();
-      renderHistoryList();
-      showToast('Đã xoá toàn bộ lịch sử');
-    }
-  }
+  function saveRecord(e) {
+    if (e && e.preventDefault) e.preventDefault();
 
-  // Export history as JSON
-  function exportHistoryJSON() {
+    const patientName = document.getElementById('patient-name').value.trim();
+    const patientBirthYear = document.getElementById('patient-birthyear').value.trim();
+    const evalDate = document.getElementById('eval-date').value;
+
+    const answeredCount = Object.keys(currentState.scores).length;
+    if (answeredCount < MRS_CONFIG.totalQuestions) {
+      const remaining = MRS_CONFIG.totalQuestions - answeredCount;
+      const proceed = confirm(`Còn ${remaining} câu hỏi chưa được chọn (sẽ mặc định hiểu là 0 - không có triệu chứng). Bạn có muốn tiếp tục lưu?`);
+      if (!proceed) return;
+
+      // Fill remaining with 0 both on UI and in state
+      for (let i = 1; i <= MRS_CONFIG.totalQuestions; i++) {
+        const q = 'q' + i;
+        if (currentState.scores[q] === undefined) {
+          currentState.scores[q] = 0;
+          const radio = document.querySelector(`input[name="${q}"][value="0"]`);
+          if (radio) radio.checked = true;
+          const row = document.querySelector(`.symptom-row[data-symptom="${q}"]`);
+          if (row) row.classList.add('is-answered');
+        }
+      }
+      calculateScores();
+    }
+
+    const patientKey = getPatientKey(patientName, patientBirthYear);
+    const evalKey = getEvaluationKey(patientName, patientBirthYear, evalDate);
     const records = getStoredRecords();
-    if (records.length === 0) {
-      alert('Chưa có dữ liệu nào để xuất.');
+
+    // Check if an evaluation with the exact same (Name + BirthYear + Date) already exists
+    const existingIndex = records.findIndex(r => {
+      const rKey = r.evalKey || getEvaluationKey(r.name, r.birthYear, r.date);
+      return rKey === evalKey;
+    });
+
+    const isUpdate = existingIndex !== -1;
+    const recordId = isUpdate ? records[existingIndex].id : 'mrs_' + Date.now();
+    const createdAt = isUpdate ? records[existingIndex].createdAt : new Date().toISOString();
+
+    const record = {
+      id: recordId,
+      createdAt: createdAt,
+      updatedAt: new Date().toISOString(),
+      evalKey: evalKey,
+      patientKey: patientKey,
+      name: patientName || 'Chưa đặt tên',
+      birthYear: patientBirthYear || '--',
+      date: evalDate || new Date().toISOString().split('T')[0],
+      scores: { ...currentState.scores },
+      mrs1: currentState.mrs1,
+      mrs2: currentState.mrs2,
+      mrs3: currentState.mrs3,
+      total: currentState.total,
+      severity: currentState.severity
+    };
+
+    if (isUpdate) {
+      // Replace existing entry and move to top (keeps ONLY the latest evaluation)
+      records.splice(existingIndex, 1);
+      records.unshift(record);
+      setStoredRecords(records);
+      showToast(`Đã cập nhật bản đánh giá mới nhất cho "${record.name}"!`);
+    } else {
+      // Add new record
+      records.unshift(record);
+      setStoredRecords(records);
+      showToast(`Đã hoàn tất đánh giá cho "${record.name}" thành công!`);
+    }
+
+    // Tự động đẩy lên Firebase Realtime Cloud (Multi-device Realtime Sync)
+    if (window.MrsFirebase && typeof window.MrsFirebase.saveEvaluation === 'function') {
+      window.MrsFirebase.saveEvaluation(record);
+    }
+
+    // Update history badge counter
+    updateHistoryBadge();
+
+    // NOTE: Dữ liệu của phiếu hiện hành được giữ nguyên vẹn 100% trên giao diện
+    // để người dùng/bác sĩ có thể tiếp tục xem hoặc chỉnh sửa mà không bị mất dữ liệu.
+  }
+
+  // Cloud Sync Modal Helpers (Protected with Admin Password "thanhta92")
+  function openCloudConfigModal() {
+    if (!isBackupUnlocked) {
+      openAuthModal(() => {
+        isBackupUnlocked = true;
+        showCloudConfigModalContent();
+      });
       return;
     }
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `mrs_history_${new Date().toISOString().split('T')[0]}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
+    showCloudConfigModalContent();
   }
 
-  // Toast notification helper
+  function showCloudConfigModalContent() {
+    if (!window.MrsFirebase) return;
+    const cfg = window.MrsFirebase.getConfig();
+    const inputUrl = document.getElementById('cfg-firebase-db-url');
+    const inputProj = document.getElementById('cfg-firebase-project-id');
+    const inputKey = document.getElementById('cfg-firebase-api-key');
+
+    if (inputUrl) inputUrl.value = cfg.databaseURL || '';
+    if (inputProj) inputProj.value = cfg.projectId || '';
+    if (inputKey) inputKey.value = cfg.apiKey || '';
+
+    const modal = document.getElementById('modal-cloud-sync');
+    if (modal) modal.classList.add('active');
+  }
+
+  function closeCloudConfigModal() {
+    const modal = document.getElementById('modal-cloud-sync');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function handleCloudModalOverlayClick(e) {
+    if (e.target && e.target.id === 'modal-cloud-sync') {
+      closeCloudConfigModal();
+    }
+  }
+
   function showToast(message) {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -2044,8 +3977,8 @@
   function getSeverityColor(total) {
     if (total <= 4) return '#2ca5a7';
     if (total <= 8) return '#27794e';
-    if (total <= 16) return '#b46b1a';
-    return '#af2b1d';
+    if (total <= 16) return '#dc964d';
+    return '#ad2b2b';
   }
 
   function escapeHtml(text) {

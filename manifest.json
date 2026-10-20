@@ -1,5 +1,5 @@
 {
-  "name": "Bảng đánh giá MRS - Mãn kinh",
+  "name": "MRS - Thang điểm đánh giá tình trạng Mãn kinh",
   "short_name": "MRS Mãn Kinh",
   "description": "Thang điểm đánh giá tình trạng mãn kinh Menopause Rating Scale (MRS)",
   "start_url": "./index.html",
