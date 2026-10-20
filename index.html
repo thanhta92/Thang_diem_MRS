@@ -82,16 +82,18 @@
       box-shadow: 0 4px 16px rgba(0,0,0,0.06);
       margin-bottom: 16px;
       gap: 12px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
 
     .toolbar-left {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
       color: var(--primary-teal-dark);
+      white-space: nowrap;
+      min-width: 0;
     }
 
     .status-badge {
@@ -1443,6 +1445,30 @@
       body {
         padding: 10px 6px 40px;
       }
+      .top-toolbar {
+        padding: 8px 12px;
+        gap: 8px;
+        flex-wrap: nowrap;
+      }
+      .toolbar-left {
+        gap: 6px;
+      }
+      .status-badge {
+        font-size: 0.72rem;
+        padding: 3px 8px;
+      }
+      #answered-counter {
+        font-size: 0.75rem;
+        white-space: nowrap;
+      }
+      .cloud-sync-badge {
+        font-size: 0.74rem;
+        padding: 4px 8px;
+      }
+      #btn-open-history {
+        padding: 6px 10px;
+        font-size: 0.78rem;
+      }
       .sheet-body {
         padding: 16px 12px 20px;
       }
@@ -1736,15 +1762,6 @@
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
         <span>Lịch sử & Thống kê (<span id="history-count">0</span>)</span>
-      </button>
-
-      <button type="button" class="btn btn-teal" id="btn-save-record" title="Hoàn tất và lưu kết quả vào bộ nhớ máy & Cloud">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-          <polyline points="17 21 17 13 7 13 7 21"></polyline>
-          <polyline points="7 3 7 8 15 8"></polyline>
-        </svg>
-        <span>Hoàn tất đánh giá</span>
       </button>
     </div>
   </header>
