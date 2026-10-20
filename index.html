@@ -1424,6 +1424,11 @@
       border-left: 4px solid var(--primary-teal);
     }
 
+    .toast.toast-warning {
+      border-left: 4px solid #f59e0b;
+      background: #231b14;
+    }
+
     /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -2589,6 +2594,8 @@
           Lưu & Kết nối lại
         </button>
       </div>
+    </div>
+  </div>
 </div>
 
 <!-- ==========================================================================
@@ -2701,8 +2708,8 @@
     });
 
     // Action buttons
-    document.getElementById('btn-save-record').addEventListener('click', saveRecord);
-    document.getElementById('btn-open-history').addEventListener('click', openHistoryModal);
+    document.getElementById('btn-save-record')?.addEventListener('click', saveRecord);
+    document.getElementById('btn-open-history')?.addEventListener('click', openHistoryModal);
 
     // Cloud Sync UI listeners
     document.getElementById('cloud-sync-status')?.addEventListener('click', openCloudConfigModal);
@@ -3854,28 +3861,48 @@
   function saveRecord(e) {
     if (e && e.preventDefault) e.preventDefault();
 
-    const patientName = document.getElementById('patient-name').value.trim();
-    const patientBirthYear = document.getElementById('patient-birthyear').value.trim();
-    const evalDate = document.getElementById('eval-date').value;
+    const nameInput = document.getElementById('patient-name');
+    const birthYearInput = document.getElementById('patient-birthyear');
+    const dateInput = document.getElementById('eval-date');
 
-    const answeredCount = Object.keys(currentState.scores).length;
-    if (answeredCount < MRS_CONFIG.totalQuestions) {
-      const remaining = MRS_CONFIG.totalQuestions - answeredCount;
-      const proceed = confirm(`Còn ${remaining} câu hỏi chưa được chọn (sẽ mặc định hiểu là 0 - không có triệu chứng). Bạn có muốn tiếp tục lưu?`);
-      if (!proceed) return;
+    const patientName = nameInput ? nameInput.value.trim() : '';
+    const patientBirthYear = birthYearInput ? birthYearInput.value.trim() : '';
+    const evalDate = dateInput ? dateInput.value.trim() : '';
 
-      // Fill remaining with 0 both on UI and in state
-      for (let i = 1; i <= MRS_CONFIG.totalQuestions; i++) {
-        const q = 'q' + i;
-        if (currentState.scores[q] === undefined) {
-          currentState.scores[q] = 0;
-          const radio = document.querySelector(`input[name="${q}"][value="0"]`);
-          if (radio) radio.checked = true;
-          const row = document.querySelector(`.symptom-row[data-symptom="${q}"]`);
-          if (row) row.classList.add('is-answered');
+    // Kiểm tra tất cả 11 câu hỏi / mục triệu chứng bên dưới
+    let allSymptomsAnswered = true;
+    let firstMissingQuestion = null;
+    for (let i = 1; i <= MRS_CONFIG.totalQuestions; i++) {
+      const q = 'q' + i;
+      if (currentState.scores[q] === undefined) {
+        allSymptomsAnswered = false;
+        if (!firstMissingQuestion) firstMissingQuestion = q;
+      }
+    }
+
+    // Bắt buộc: Họ và tên, Năm sinh, Ngày đánh giá và tất cả các mục triệu chứng
+    if (!patientName || !patientBirthYear || !evalDate || !allSymptomsAnswered) {
+      showToast('Vui lòng điền đầy đủ thông tin và các mục đánh giá', 'warning');
+
+      // Tự động cuộn và focus vào mục đầu tiên chưa điền
+      if (!patientName && nameInput) {
+        nameInput.focus();
+        nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (!patientBirthYear && birthYearInput) {
+        birthYearInput.focus();
+        birthYearInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (!evalDate && dateInput) {
+        dateInput.focus();
+        dateInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (firstMissingQuestion) {
+        const row = document.querySelector(`.symptom-row[data-symptom="${firstMissingQuestion}"]`);
+        if (row) {
+          row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          row.style.outline = '2px solid #ef4444';
+          setTimeout(() => { row.style.outline = ''; }, 2200);
         }
       }
-      calculateScores();
+      return;
     }
 
     const patientKey = getPatientKey(patientName, patientBirthYear);
@@ -3898,9 +3925,9 @@
       updatedAt: new Date().toISOString(),
       evalKey: evalKey,
       patientKey: patientKey,
-      name: patientName || 'Chưa đặt tên',
-      birthYear: patientBirthYear || '--',
-      date: evalDate || new Date().toISOString().split('T')[0],
+      name: patientName,
+      birthYear: patientBirthYear,
+      date: evalDate,
       scores: { ...currentState.scores },
       mrs1: currentState.mrs1,
       mrs2: currentState.mrs2,
@@ -3914,12 +3941,12 @@
       records.splice(existingIndex, 1);
       records.unshift(record);
       setStoredRecords(records);
-      showToast(`Đã cập nhật bản đánh giá mới nhất cho "${record.name}"!`);
+      showToast('Đánh giá hoàn tất');
     } else {
       // Add new record
       records.unshift(record);
       setStoredRecords(records);
-      showToast(`Đã hoàn tất đánh giá cho "${record.name}" thành công!`);
+      showToast('Đánh giá hoàn tất');
     }
 
     // Tự động đẩy lên Firebase Realtime Cloud (Multi-device Realtime Sync)
@@ -3972,14 +3999,16 @@
     }
   }
 
-  function showToast(message) {
+  function showToast(message, type = 'success') {
     const container = document.getElementById('toast-container');
+    if (!container) return;
     const toast = document.createElement('div');
-    toast.className = 'toast';
+    toast.className = 'toast' + (type === 'warning' ? ' toast-warning' : '');
+    const icon = type === 'warning'
+      ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
+      : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#368f91" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
     toast.innerHTML = `
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#368f91" stroke-width="2.5">
-        <polyline points="20 6 9 17 4 12"></polyline>
-      </svg>
+      ${icon}
       <span>${escapeHtml(message)}</span>
     `;
     container.appendChild(toast);
