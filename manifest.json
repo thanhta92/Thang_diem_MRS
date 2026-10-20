@@ -1,0 +1,21 @@
+{
+  "name": "Bảng đánh giá MRS - Mãn kinh",
+  "short_name": "MRS Mãn Kinh",
+  "description": "Thang điểm đánh giá tình trạng mãn kinh Menopause Rating Scale (MRS)",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#eaf2f2",
+  "theme_color": "#368f91",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

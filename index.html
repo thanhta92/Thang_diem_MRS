@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Bảng đánh giá tình trạng mãn kinh - MRS (Menopause Rating Scale)</title>
+  <meta name="description" content="Thang điểm đánh giá tình trạng mãn kinh Menopause Rating Scale (MRS) chuẩn y khoa. Tự động tính điểm và lưu trữ cục bộ trên iPad / máy tính bảng.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="MRS Thang Điểm">
+  <meta name="theme-color" content="#368f91">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Google Fonts for crisp medical typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       CSS VARIABLES & THEME SETUP (Medical Teal Palette matching MRS printout)
+       ========================================================================== */
+    :root {
+      --primary-teal: #368f91;
+      --primary-teal-dark: #266b6c;
+      --primary-teal-light: #e6f4f4;
+      --primary-teal-subtle: #f0f8f8;
+      --accent-coral: #d9745b;
+      --border-teal: #94c8c9;
+      --table-border: #b5dada;
+      --text-main: #1f3637;
+      --text-muted: #536e70;
+      --bg-page: #eaf2f2;
+      --bg-sheet: #ffffff;
+      
+      /* Rating Scale Colors */
+      --rating-0: #2ca5a7;
+      --rating-1: #4baaa5;
+      --rating-2: #dc964d;
+      --rating-3: #c95d43;
+      --rating-4: #ad2b2b;
+
+      --shadow-sheet: 0 10px 35px rgba(35, 77, 78, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 12px 60px;
+    }
+
+    /* Container for the app */
+    .app-wrapper {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Top Floating Toolbar (Hidden during print) */
+    .top-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary-teal-dark);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      background: var(--primary-teal-light);
+      color: var(--primary-teal-dark);
+    }
+
+    .status-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary-teal);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-teal {
+      background: var(--primary-teal);
+      color: #fff;
+    }
+
+    .btn-teal:hover {
+      background: var(--primary-teal-dark);
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--primary-teal-dark);
+      border-color: var(--border-teal);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary-teal-light);
+    }
+
+    .btn-coral {
+      background: var(--accent-coral);
+      color: #fff;
+    }
+
+    .btn-coral:hover {
+      background: #bf5b43;
+    }
+
+    .btn-icon-only {
+      padding: 8px;
+      width: 38px;
+      height: 38px;
+    }
+
+    /* ==========================================================================
+       THE PHYSICAL MEDICAL SHEET (Exact replication of the image)
+       ========================================================================== */
+    .medical-sheet {
+      background: var(--bg-sheet);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sheet);
+      overflow: hidden;
+      border: 1px solid rgba(54, 143, 145, 0.18);
+      position: relative;
+    }
+
+    /* Top Banner */
+    .sheet-header {
+      background: linear-gradient(135deg, #3aa4a6 0%, #2e8b8d 100%);
+      color: #ffffff;
+      text-align: center;
+      padding: 22px 20px 18px;
+      border-bottom: 4px solid var(--accent-coral);
+    }
+
+    .sheet-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: none;
+      margin-bottom: 4px;
+    }
+
+    .sheet-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 500;
+      opacity: 0.95;
+      letter-spacing: 0.3px;
+    }
+
+    /* Sheet Body */
+    .sheet-body {
+      padding: 24px 28px 30px;
+    }
+
+    /* Administrative Info Box */
+    .patient-info-card {
+      border: 1.5px solid var(--border-teal);
+      border-radius: 18px;
+      padding: 16px 24px;
+      margin-bottom: 18px;
+      background: #fafdfd;
+      display: grid;
+      grid-template-columns: 1.8fr 1.1fr 1.3fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .info-field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+      font-size: 0.95rem;
+    }
+
+    .info-input {
+      flex: 1;
+      border: none;
+      border-bottom: 1.5px dotted #6b9e9f;
+      background: transparent;
+      padding: 4px 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #174244;
+      outline: none;
+      transition: border-bottom 0.2s;
+    }
+
+    .info-input:focus {
+      border-bottom: 2px solid var(--primary-teal);
+      background: rgba(54, 143, 145, 0.05);
+      border-radius: 4px 4px 0 0;
+    }
+
+    /* Instruction Notes */
+    .instruction-box {
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      text-align: justify;
+      padding: 0 4px;
+    }
+
+    .instruction-box p {
+      margin-bottom: 4px;
+    }
+
+    .instruction-box strong {
+      color: var(--text-main);
+    }
+
+    /* Visual Rating Scale (The 5 Faces from 0 to 4 with horizontal track) */
+    .rating-visual-guide {
+      position: relative;
+      margin: 10px 0 28px;
+      padding: 0 10px;
+    }
+
+    .visual-guide-track {
+      position: absolute;
+      top: 36px;
+      left: 7%;
+      right: 7%;
+      height: 3px;
+      background: #cbdfe0;
+      z-index: 1;
+    }
+
+    .visual-guide-steps {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+    }
+
+    .visual-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 18%;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+
+    .visual-step:hover {
+      transform: translateY(-2px);
+    }
+
+    .step-score-circle {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #579899;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.78rem;
+      color: #2b7072;
+      margin-bottom: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+    .step-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      background: #fff;
+      border: 2px solid #9ec7c8;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: all 0.25s ease;
+    }
+
+    .visual-step[data-level="0"] .step-avatar { border-color: var(--rating-0); color: var(--rating-0); }
+    .visual-step[data-level="1"] .step-avatar { border-color: var(--rating-1); color: var(--rating-1); }
+    .visual-step[data-level="2"] .step-avatar { border-color: var(--rating-2); color: var(--rating-2); }
+    .visual-step[data-level="3"] .step-avatar { border-color: var(--rating-3); color: var(--rating-3); }
+    .visual-step[data-level="4"] .step-avatar { border-color: var(--rating-4); color: var(--rating-4); }
+
+    .step-avatar svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .step-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .step-label span {
+      display: block;
+      font-weight: 800;
+    }
+
+    .visual-step[data-level="0"] .step-label span { color: var(--rating-0); }
+    .visual-step[data-level="1"] .step-label span { color: var(--rating-1); }
+    .visual-step[data-level="2"] .step-label span { color: var(--rating-2); }
+    .visual-step[data-level="3"] .step-label span { color: var(--rating-3); }
+    .visual-step[data-level="4"] .step-label span { color: var(--rating-4); }
+
+    /* ==========================================================================
+       SYMPTOMS EVALUATION TABLE
+       ========================================================================== */
+    .mrs-table-container {
+      border: 2px solid var(--border-teal);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 24px;
+      background: #fff;
+    }
+
+    .mrs-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    /* Table Column widths */
+    .col-symptom {
+      width: 65%;
+    }
+    .col-score {
+      width: 7%;
+      text-align: center;
+    }
+
+    /* Group Category Headers */
+    .group-header-row th {
+      background: #399194;
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.96rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-align: center;
+      padding: 10px 14px;
+      text-transform: uppercase;
+      border: none;
+    }
+
+    .group-header-subth {
+      background: #489fa2;
+      color: #ffffff;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid #71b9bb;
+      padding: 6px 2px;
+    }
+
+    /* Symptoms rows */
+    .symptom-row {
+      border-top: 1px solid var(--table-border);
+      transition: background-color 0.15s ease;
+    }
+
+    .symptom-row:hover {
+      background-color: #f7fcfc;
+    }
+
+    .symptom-row.is-answered {
+      background-color: rgba(54, 143, 145, 0.03);
+    }
+
+    .symptom-title-cell {
+      padding: 10px 14px;
+      vertical-align: middle;
+      border-right: 1px solid var(--table-border);
+      font-size: 0.91rem;
+      line-height: 1.4;
+    }
+
+    .symptom-name {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .symptom-desc {
+      font-weight: 400;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* Rating Button Cell */
+    .score-cell {
+      padding: 4px;
+      text-align: center;
+      vertical-align: middle;
+      border-right: 1px solid var(--table-border);
+      user-select: none;
+    }
+
+    .score-cell:last-child {
+      border-right: none;
+    }
+
+    /* Touch-friendly, elegant circular radio selector */
+    .rating-option {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+
+    .rating-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .score-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid #97c8c9;
+      background: #ffffff;
+      color: #316466;
+      font-size: 0.92rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .rating-option:hover .score-circle {
+      border-color: var(--primary-teal);
+      background: var(--primary-teal-light);
+      transform: scale(1.08);
+    }
+
+    /* Checked State */
+    .rating-option input[type="radio"]:checked + .score-circle {
+      transform: scale(1.12);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.16);
+      border-width: 2px;
+    }
+
+    /* Dynamic Colors according to level */
+    .rating-option.val-0 input[type="radio"]:checked + .score-circle {
+      background: var(--rating-0);
+      border-color: #1e7d7f;
+      color: #ffffff;
+    }
+    .rating-option.val-1 input[type="radio"]:checked + .score-circle {
+      background: var(--rating-1);
+      border-color: #32817d;
+      color: #ffffff;
+    }
+    .rating-option.val-2 input[type="radio"]:checked + .score-circle {
+      background: var(--rating-2);
+      border-color: #b07231;
+      color: #ffffff;
+    }
+    .rating-option.val-3 input[type="radio"]:checked + .score-circle {
+      background: var(--rating-3);
+      border-color: #9d3f27;
+      color: #ffffff;
+    }
+    .rating-option.val-4 input[type="radio"]:checked + .score-circle {
+      background: var(--rating-4);
+      border-color: #851818;
+      color: #ffffff;
+    }
+
+    /* Subtotal Rows inside groups */
+    .group-subtotal-row {
+      background: #edf6f6;
+      border-top: 1.5px solid var(--border-teal);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary-teal-dark);
+    }
+
+    .group-subtotal-row td {
+      padding: 8px 14px;
+    }
+
+    /* ==========================================================================
+       SUMMARY BOX (Matching exact bottom block in photo)
+       ========================================================================== */
+    .summary-section {
+      border: 2px solid var(--border-teal);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      margin-bottom: 24px;
+      background: #fff;
+    }
+
+    .summary-left {
+      border-right: 2px solid var(--border-teal);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .summary-header {
+      background: #399194;
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.94rem;
+      font-weight: 700;
+      padding: 10px 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .summary-items {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      justify-content: center;
+      background: #fdfefe;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.93rem;
+      color: var(--text-main);
+      padding-bottom: 6px;
+      border-bottom: 1px dashed #d5e9e9;
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .summary-label {
+      font-weight: 600;
+    }
+
+    .summary-val {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--primary-teal-dark);
+      background: var(--primary-teal-light);
+      padding: 3px 12px;
+      border-radius: 12px;
+      min-width: 48px;
+      text-align: center;
+    }
+
+    .summary-right {
+      display: flex;
+      flex-direction: column;
+      background: #fafdfd;
+    }
+
+    .summary-right-content {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .total-score-badge {
+      font-size: 3.2rem;
+      font-weight: 800;
+      color: var(--primary-teal-dark);
+      line-height: 1;
+      margin: 4px 0 8px;
+      transition: all 0.3s ease;
+    }
+
+    .total-score-max {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Severity evaluation pill */
+    .severity-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-top: 4px;
+      transition: all 0.25s ease;
+    }
+
+    .severity-tag.sev-none {
+      background: #e2f4f1;
+      color: #1a7872;
+      border: 1px solid #94dcd5;
+    }
+    .severity-tag.sev-mild {
+      background: #e3f5eb;
+      color: #27794e;
+      border: 1px solid #a3dfbb;
+    }
+    .severity-tag.sev-moderate {
+      background: #fff4e5;
+      color: #b46b1a;
+      border: 1px solid #ffd499;
+    }
+    .severity-tag.sev-severe {
+      background: #feece9;
+      color: #af2b1d;
+      border: 1px solid #f9b6ad;
+    }
+
+    .severity-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.3;
+      max-width: 260px;
+    }
+
+    /* Action Bar (Save to iPad, Print, Reset) */
+    .sheet-action-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1.5px dashed var(--border-teal);
+    }
+
+    .footer-left {
+      display: flex;
+      gap: 10px;
+    }
+
+    .footer-right {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Quick Fill Bar for testing or default 0 */
+    .quick-tools {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .link-action {
+      color: var(--primary-teal);
+      text-decoration: underline;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .link-action:hover {
+      color: var(--primary-teal-dark);
+    }
+
+    /* ==========================================================================
+       MODAL / DRAWER FOR LOCAL HISTORY (Designed specifically for iPad)
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 43, 44, 0.45);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #fff;
+      width: 100%;
+      max-width: 680px;
+      max-height: 88vh;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-header {
+      background: var(--primary-teal);
+      color: #fff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-body {
+      padding: 18px 20px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .search-filter-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 9px 14px;
+      border: 1.5px solid var(--border-teal);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary-teal);
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .history-card {
+      border: 1.5px solid #d8ecec;
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+      background: #fafdfd;
+    }
+
+    .history-card:hover {
+      border-color: var(--primary-teal);
+      background: #f2fafa;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+    }
+
+    .history-info-main {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .history-info-meta {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .history-scores {
+      font-size: 0.82rem;
+      color: var(--primary-teal-dark);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    .history-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      opacity: 0.6;
+    }
+
+    .modal-footer {
+      padding: 12px 20px;
+      background: #f6fbfb;
+      border-top: 1px solid #e1efef;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: #1f3637;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+      animation: slideInRight 0.3s ease;
+      border-left: 4px solid var(--primary-teal);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* ==========================================================================
+       RESPONSIVE & IPAD / TABLET OPTIMIZATIONS
+       ========================================================================== */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px 6px 40px;
+      }
+      .sheet-body {
+        padding: 16px 12px 20px;
+      }
+      .sheet-title {
+        font-size: 1.35rem;
+      }
+      .sheet-subtitle {
+        font-size: 1rem;
+      }
+      .patient-info-card {
+        grid-template-columns: 1fr;
+        padding: 12px 14px;
+        gap: 10px;
+      }
+      .visual-guide-track {
+        top: 32px;
+      }
+      .step-score-circle {
+        width: 20px;
+        height: 20px;
+        font-size: 0.72rem;
+      }
+      .step-avatar {
+        width: 38px;
+        height: 38px;
+      }
+      .step-avatar svg {
+        width: 24px;
+        height: 24px;
+      }
+      .step-label {
+        font-size: 0.65rem;
+      }
+      .col-symptom {
+        width: 50%;
+      }
+      .col-score {
+        width: 10%;
+      }
+      .symptom-title-cell {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+      }
+      .rating-option {
+        width: 32px;
+        height: 32px;
+      }
+      .score-circle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.84rem;
+      }
+      .summary-section {
+        grid-template-columns: 1fr;
+      }
+      .summary-left {
+        border-right: none;
+        border-bottom: 2px solid var(--border-teal);
+      }
+      .sheet-action-footer {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .footer-left, .footer-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .footer-left .btn, .footer-right .btn {
+        flex: 1;
+      }
+    }
+
+    /* ==========================================================================
+       PRINT STYLESHEET (Outputs pristine A4 medical sheet identical to original)
+       ========================================================================== */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 8mm 10mm;
+      }
+
+      body {
+        background: #fff !important;
+        padding: 0 !important;
+        color: #000 !important;
+      }
+
+      .top-toolbar,
+      .sheet-action-footer,
+      .quick-tools,
+      .modal-overlay,
+      .toast-container {
+        display: none !important;
+      }
+
+      .app-wrapper {
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+
+      .medical-sheet {
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+      }
+
+      .sheet-header {
+        background: #368f91 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        padding: 12px 10px 10px !important;
+      }
+
+      .sheet-title {
+        font-size: 1.4rem !important;
+      }
+
+      .sheet-subtitle {
+        font-size: 1.05rem !important;
+      }
+
+      .sheet-body {
+        padding: 10px 0 !important;
+      }
+
+      .patient-info-card {
+        padding: 8px 14px !important;
+        margin-bottom: 10px !important;
+        border: 1.5px solid #8ab8b9 !important;
+        background: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .instruction-box {
+        font-size: 0.8rem !important;
+        margin-bottom: 10px !important;
+      }
+
+      .rating-visual-guide {
+        margin: 4px 0 14px !important;
+      }
+
+      .visual-guide-track {
+        top: 28px !important;
+        background: #99c2c3 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .step-avatar {
+        width: 36px !important;
+        height: 36px !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .group-header-row th {
+        background: #399194 !important;
+        color: #fff !important;
+        padding: 6px !important;
+        font-size: 0.88rem !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .symptom-title-cell {
+        padding: 6px 8px !important;
+        font-size: 0.82rem !important;
+      }
+
+      .score-circle {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.8rem !important;
+      }
+
+      .rating-option input[type="radio"]:checked + .score-circle {
+        border-width: 2px !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .summary-header {
+        background: #399194 !important;
+        color: #fff !important;
+        padding: 6px 10px !important;
+        font-size: 0.85rem !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .summary-items {
+        padding: 8px 12px !important;
+        gap: 6px !important;
+      }
+
+      .total-score-badge {
+        font-size: 2.4rem !important;
+      }
+
+      .mrs-table-container,
+      .summary-section {
+        border-color: #8ab8b9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <!-- TOP TOOLBAR (Hidden on Print) -->
+  <header class="top-toolbar">
+    <div class="toolbar-left">
+      <span class="status-badge">
+        <span class="dot"></span>
+        <span>MRS Thang Điểm Mãn Kinh</span>
+      </span>
+      <span id="answered-counter" style="color: var(--text-muted); font-size: 0.82rem; font-weight: 500;">
+        Đã trả lời: 0/11
+      </span>
+    </div>
+
+    <div class="toolbar-actions">
+      <button type="button" class="btn btn-outline" id="btn-open-history" title="Xem lịch sử đánh giá đã lưu trên iPad">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Lịch sử iPad (<span id="history-count">0</span>)</span>
+      </button>
+
+      <button type="button" class="btn btn-teal" id="btn-save-record" title="Hoàn tất và lưu kết quả vào bộ nhớ iPad">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        <span>Hoàn tất đánh giá</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MEDICAL SHEET (Exact physical layout in photograph) -->
+  <main class="medical-sheet" id="print-area">
+    <!-- Header Banner -->
+    <div class="sheet-header">
+      <h1 class="sheet-title">Đánh giá tình trạng mãn kinh</h1>
+      <div class="sheet-subtitle">MRS (Menopause Rating Scale)</div>
+    </div>
+
+    <div class="sheet-body">
+      <!-- Patient Information -->
+      <div class="patient-info-card">
+        <div class="info-field">
+          <label for="patient-name" class="info-label">Họ & tên:</label>
+          <input type="text" id="patient-name" class="info-input" placeholder="Nhập họ và tên..." autocomplete="name">
+        </div>
+        <div class="info-field">
+          <label for="patient-birthyear" class="info-label">Năm sinh:</label>
+          <input type="number" id="patient-birthyear" class="info-input" placeholder="Ví dụ: 1975" min="1920" max="2026" oninput="if(this.value.length>4) this.value=this.value.slice(0,4)">
+        </div>
+        <div class="info-field">
+          <label for="eval-date" class="info-label">Ngày đánh giá:</label>
+          <input type="date" id="eval-date" class="info-input">
+        </div>
+      </div>
+
+      <!-- Instructions -->
+      <div class="instruction-box">
+        <p>Những triệu chứng nào sau đây hiện tại Chị/Cô đang gặp phải? Xin vui lòng tích chọn vào ô điểm thích hợp để được Bác sĩ hướng dẫn cách chăm sóc sức khoẻ mãn kinh.</p>
+        <p>Các triệu chứng nào không gặp, xin vui lòng tích chọn vào số <strong>“0” (Không)</strong>.</p>
+      </div>
+
+      <!-- Visual Rating Guide (Connected SVG Emojis) -->
+      <div class="rating-visual-guide" aria-hidden="true">
+        <div class="visual-guide-track"></div>
+        <div class="visual-guide-steps">
+          
+          <!-- 0: No Symptoms -->
+          <div class="visual-step" data-level="0">
+            <div class="step-score-circle">0</div>
+            <div class="step-avatar">
+              <!-- Smiling Face -->
+              <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <circle cx="18" cy="18" r="15"/>
+                <circle cx="12.5" cy="14" r="1.5" fill="currentColor"/>
+                <circle cx="23.5" cy="14" r="1.5" fill="currentColor"/>
+                <path d="M11 20.5C12.8 24 23.2 24 25 20.5"/>
+              </svg>
+            </div>
+            <div class="step-label">Hoàn toàn<br><span>KHÔNG CÓ triệu chứng</span></div>
+          </div>
+
+          <!-- 1: Mild -->
+          <div class="visual-step" data-level="1">
+            <div class="step-score-circle">1</div>
+            <div class="step-avatar">
+              <!-- Slight Neutral/Calm Face -->
+              <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <circle cx="18" cy="18" r="15"/>
+                <circle cx="12.5" cy="14" r="1.5" fill="currentColor"/>
+                <circle cx="23.5" cy="14" r="1.5" fill="currentColor"/>
+                <line x1="12" y1="21.5" x2="24" y2="21.5"/>
+              </svg>
+            </div>
+            <div class="step-label">Có triệu chứng<br><span>NHẸ</span></div>
+          </div>
+
+          <!-- 2: Moderate -->
+          <div class="visual-step" data-level="2">
+            <div class="step-score-circle">2</div>
+            <div class="step-avatar">
+              <!-- Slight Downward / Worried -->
+              <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <circle cx="18" cy="18" r="15"/>
+                <circle cx="12.5" cy="14.5" r="1.5" fill="currentColor"/>
+                <circle cx="23.5" cy="14.5" r="1.5" fill="currentColor"/>
+                <path d="M12.5 22.5C14.5 20.8 21.5 20.8 23.5 22.5"/>
+              </svg>
+            </div>
+            <div class="step-label">Có triệu chứng<br><span>TRUNG BÌNH</span></div>
+          </div>
+
+          <!-- 3: Severe -->
+          <div class="visual-step" data-level="3">
+            <div class="step-score-circle">3</div>
+            <div class="step-avatar">
+              <!-- Sad / Distressed -->
+              <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <circle cx="18" cy="18" r="15"/>
+                <path d="M11 12.5L14.5 14"/>
+                <path d="M25 12.5L21.5 14"/>
+                <circle cx="12.5" cy="16" r="1.5" fill="currentColor"/>
+                <circle cx="23.5" cy="16" r="1.5" fill="currentColor"/>
+                <path d="M12 24C14 20.5 22 20.5 24 24"/>
+              </svg>
+            </div>
+            <div class="step-label">Có triệu chứng<br><span>NẶNG</span></div>
+          </div>
+
+          <!-- 4: Very Severe -->
+          <div class="visual-step" data-level="4">
+            <div class="step-score-circle">4</div>
+            <div class="step-avatar">
+              <!-- Crying with tears -->
+              <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <circle cx="18" cy="18" r="15"/>
+                <path d="M10.5 12L14.5 14.5"/>
+                <path d="M25.5 12L21.5 14.5"/>
+                <!-- Tears -->
+                <path d="M11 17C10 19 10 21 11 23C12 21 12 19 11 17Z" fill="currentColor" stroke="none"/>
+                <path d="M25 17C24 19 24 21 25 23C26 21 26 19 25 17Z" fill="currentColor" stroke="none"/>
+                <circle cx="13" cy="16.5" r="1.2" fill="currentColor"/>
+                <circle cx="23" cy="16.5" r="1.2" fill="currentColor"/>
+                <path d="M12 25C14 21 22 21 24 25"/>
+              </svg>
+            </div>
+            <div class="step-label">Có triệu chứng<br><span>RẤT NẶNG</span></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FORM TABLE -->
+      <form id="mrs-form" onsubmit="return false;">
+        <div class="mrs-table-container">
+          <table class="mrs-table">
+            <colgroup>
+              <col class="col-symptom">
+              <col class="col-score">
+              <col class="col-score">
+              <col class="col-score">
+              <col class="col-score">
+              <col class="col-score">
+            </colgroup>
+
+            <!-- ================= GROUP 1: PSYCHOLOGICAL (MRS1) ================= -->
+            <thead>
+              <tr class="group-header-row">
+                <th colspan="6">NHÓM TRIỆU CHỨNG TÂM LÝ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Symptom 1 -->
+              <tr class="symptom-row" data-symptom="q1" data-group="mrs1">
+                <td class="symptom-title-cell">
+                  <span class="symptom-name">1/ Tâm trạng trầm cảm</span>
+                  <span class="symptom-desc">(cảm giác tệ hại, buồn, dễ rơi nước mắt, thiếu sức sống, thay đổi tâm trạng)</span>
+                </td>
+                <td class="score-cell"><label class="rating-option val-0"><input type="radio" name="q1" value="0"><span class="score-circle">0</span></label></td>
+                <td class="score-cell"><label class="rating-option val-1"><input type="radio" name="q1" value="1"><span class="score-circle">1</span></label></td>
+                <td class="score-cell"><label class="rating-option val-2"><input type="radio" name="q1" value="2"><span class="score-circle">2</span></label></td>
+                <td class="score-cell"><label class="rating-option val-3"><input type="radio" name="q1" value="3"><span class="score-circle">3</span></label></td>
+                <td class="score-cell"><label class="rating-option val-4"><input type="radio" name="q1" value="4"><span class="score-circle">4</span></label></td>
+              </tr>
+
+              <!-- Symptom 2 -->
+              <tr class="symptom-row" data-symptom="q2" data-group="mrs1">
+                <td class="symptom-title-cell">
+                  <span class="symptom-name">2/ Dễ bị kích thích</span>
+                  <span class="symptom-desc">(cảm giác lo lắng, căng thẳng nội tâm, cảm giác hung hăng, dễ gây sự)</span>
+                </td>
+                <td class="score-cell"><label class="rating-option val-0"><input type="radio" name="q2" value="0"><span class="score-circle">0</span></label></td>
+                <td class="score-cell"><label class="rating-option val-1"><input type="radio" name="q2" value="1"><span class="score-circle">1</span></label></td>
+                <td class="score-cell"><label class="rating-option val-2"><input type="radio" name="q2" value="2"><span class="score-circle">2</span></label></td>
+                <td class="score-cell"><label class="rating-option val-3"><input type="radio" name="q2" value="3"><span class="score-circle">3</span></label></td>
+                <td class="score-cell"><label class="rating-option val-4"><input type="radio" name="q2" value="4"><span class="score-circle">4</span></label></td>
+              </tr>
+
+              <!-- Symptom 3 -->
+              <tr class="symptom-row" data-symptom="q3" data-group="mrs1">
+                <td class="symptom-title-cell">
+                  <span class="symptom-name">3/ Lo âu, bồn chồn</span>
+                  <span class="symptom-desc">(cảm giác bất an bên trong, hoang mang, hoảng sợ)</span>
+                </td>
+                <td class="score-cell"><label class="rating-option val-0"><input type="radio" name="q3" value="0"><span class="score-circle">0</span></label></td>
+                <td class="score-cell"><label class="rating-option val-1"><input type="radio" name="q3" value="1"><span class="score-circle">1</span></label></td>
+                <td class="score-cell"><label class="rating-option val-2"><input type="radio" name="q3" value="2"><span class="score-circle">2</span></label></td>
+                <td class="score-cell"><label class="rating-option val-3"><input type="radio" name="q3" value="3"><span class="score-circle">3</span></label></td>
+                <td class="score-cell"><label class="rating-option val-4"><input type="radio" name="q3" value="4"><span class="score-circle">4</span></label></td>
+              </tr>
+
+              <!-- Symptom 4 -->
+              <tr class="symptom-row" data-symptom="q4" data-group="mrs1">
+                <td class="symptom-title-cell">
+                  <span class="symptom-name">4/ Mệt mỏi về thể chất và tinh thần</span>
+                  <span class="symptom-desc">(thụ động, giảm trí nhớ, giảm tập trung, hay quên)</span>
+                </td>
+                <td class="score-cell"><label class="rating-option val-0"><input type="radio" name="q4" value="0"><span class="score-circle">0</span></label></td>
+                <td class="score-cell"><label class="rating-option val-1"><input type="radio" name="q4" value="1"><span class="score-circle">1</span></label></td>
+                <td class="score-cell"><label class="rating-option val-2"><input type="radio" name="q4" value="2"><span class="score-circle">2</span></label></td>
+                <td class="score-cell"><label class="rating-option val-3"><input type="radio" name="q4" value="3"><span class="score-circle">3</span></label></td>
+                <td class="score-cell"><label class="rating-option val-4"><input type="radio" name="q4" value="4"><span class="score-circle">4</span></label></td>
+              </tr>
+            </tbody>
+
+            <!-- ================= GROUP 2: SOMATO-VEGETATIVE (MRS2) ================= -->
+            <thead>
+              <tr class="group-header-row">
+                <th colspan="6">NHÓM TRIỆU CHỨNG RỐI LOẠN THẦN KINH THỰC VẬT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Symptom 5 -->
+              <tr class="symptom-row" data-symptom="q5" data-group="mrs2">
+                <td class="symptom-title-cell">
+                  <span class="symptom-name">1/ Bốc hỏa, đổ mồ hôi</span>
+                  <span class="symptom-desc">(tình trạng ra mồ hôi)</span>
+                </td>
+                <td class="score-cell"><label class="rating-option val-0"><input type="radio" name="q5" value="0"><span class="score-circle">0</span></label></td>
+                <td class="score-cell"><label class="rating-option val-1"><input type="radio" name="q5" value="1"><span class="score-circle">1</span></label></td>
+                <td class="score-cell"><label class="rating-option val-2"><input type="radio" name="q5" value="2"><span class="score-circle">2</span></label></td>
+                <td class="score-cell"><label class="rating-option val-3"><input type="radio" name="q5" value="3"><span class="score-circle">3</span></label></td>
+                <td class="score-cell"><label class="rating-option val-4"><input type="radio" name="q5" value="4"><span class="score-circle">4</span></label></td>
+              </tr>
+
+              <!-- Symptom 6 -->
+              <tr class="symptom-row" data-symptom="q6" data-group="mrs2">
+                <td class="symptom-title-cell">
+                  <span class="symptom-name">2/ Khó chịu ở tim</span>
+                  <span class="symptom-desc">(cảm thấy nhịp tim bất thường, tim đập chậm, tim đập nhanh, hồi hộp)</span>
+                </td>
+                <td class="score-cell"><label class="rating-option val-0"><input type="radio" name="q6" value="0"><span class="score-circle">0</span></label></td>
+                <td class="score-cell"><label class="rating-option val-1"><input type="radio" name="q6" value="1"><span class="score-circle">1</span></label></td>
+                <td class="score-cell"><label class="rating-option val-2"><input type="radio" name="q6" value="2"><span class="score-circle">2</span></label></td>
+                <td class="score-cell"><label class="rating-option val-3"><input type="radio" name="q6" value="3"><span class="score-circle">3</span></label></td>
+                <td class="score-cell"><label class="rating-option val-4"><input type="radio" name="q6" value="4"><span class="score-circle">4</span></label></td>
+              </tr>
+
+              <!-- Symptom 7 -->
+              <tr class="symptom-row" data-symptom="q7" data-group="mrs2">
+                <td class="symptom-title-cell">
+                  <span class="symptom-name">3/ Rối loạn về giấc ngủ</span>
+                  <span class="symptom-desc">(khó khăn trong việc đi vào giấc ngủ, ngủ chập chờn không ngon giấc, thức dậy sớm...)</span>
+                </td>
+                <td class="score-cell"><label class="rating-option val-0"><input type="radio" name="q7" value="0"><span class="score-circle">0</span></label></td>
+                <td class="score-cell"><label class="rating-option val-1"><input type="radio" name="q7" value="1"><span class="score-circle">1</span></label></td>
+                <td class="score-cell"><label class="rating-option val-2"><input type="radio" name="q7" value="2"><span class="score-circle">2</span></label></td>
+                <td class="score-cell"><label class="rating-option val-3"><input type="radio" name="q7" value="3"><span class="score-circle">3</span></label></td>
+                <td class="score-cell"><label class="rating-option val-4"><input type="radio" name="q7" value="4"><span class="score-circle">4</span></label></td>
+              </tr>
+
+              <!-- Symptom 8 -->
+              <tr class="symptom-row" data-symptom="q8" data-group="mrs2">
+                <td class="symptom-title-cell">
+                  <span class="symptom-name">4/ Những khó chịu về cơ, khớp</span>
+                  <span class="symptom-desc">(đau khớp, những than phiền tương tự như bệnh thấp khớp)</span>
+                </td>
+                <td class="score-cell"><label class="rating-option val-0"><input type="radio" name="q8" value="0"><span class="score-circle">0</span></label></td>
+                <td class="score-cell"><label class="rating-option val-1"><input type="radio" name="q8" value="1"><span class="score-circle">1</span></label></td>
+                <td class="score-cell"><label class="rating-option val-2"><input type="radio" name="q8" value="2"><span class="score-circle">2</span></label></td>
+                <td class="score-cell"><label class="rating-option val-3"><input type="radio" name="q8" value="3"><span class="score-circle">3</span></label></td>
+                <td class="score-cell"><label class="rating-option val-4"><input type="radio" name="q8" value="4"><span class="score-circle">4</span></label></td>
+              </tr>
+            </tbody>
+
+            <!-- ================= GROUP 3: UROGENITAL (MRS3) ================= -->
+            <thead>
+              <tr class="group-header-row">
+                <th colspan="6">NHÓM TRIỆU CHỨNG NIỆU DỤC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Symptom 9 -->
+              <tr class="symptom-row" data-symptom="q9" data-group="mrs3">
+                <td class="symptom-title-cell">
+                  <span class="symptom-name">1/ Rối loạn tình dục</span>
+                  <span class="symptom-desc">(thay đổi về ham muốn tình dục, hoạt động tình dục và thỏa mãn tình dục)</span>
+                </td>
+                <td class="score-cell"><label class="rating-option val-0"><input type="radio" name="q9" value="0"><span class="score-circle">0</span></label></td>
+                <td class="score-cell"><label class="rating-option val-1"><input type="radio" name="q9" value="1"><span class="score-circle">1</span></label></td>
+                <td class="score-cell"><label class="rating-option val-2"><input type="radio" name="q9" value="2"><span class="score-circle">2</span></label></td>
+                <td class="score-cell"><label class="rating-option val-3"><input type="radio" name="q9" value="3"><span class="score-circle">3</span></label></td>
+                <td class="score-cell"><label class="rating-option val-4"><input type="radio" name="q9" value="4"><span class="score-circle">4</span></label></td>
+              </tr>
+
+              <!-- Symptom 10 -->
+              <tr class="symptom-row" data-symptom="q10" data-group="mrs3">
+                <td class="symptom-title-cell">
+                  <span class="symptom-name">2/ Rối loạn tiết niệu</span>
+                  <span class="symptom-desc">(đi tiểu khó, tiểu lắt nhắt, tiểu không kiểm soát)</span>
+                </td>
+                <td class="score-cell"><label class="rating-option val-0"><input type="radio" name="q10" value="0"><span class="score-circle">0</span></label></td>
+                <td class="score-cell"><label class="rating-option val-1"><input type="radio" name="q10" value="1"><span class="score-circle">1</span></label></td>
+                <td class="score-cell"><label class="rating-option val-2"><input type="radio" name="q10" value="2"><span class="score-circle">2</span></label></td>
+                <td class="score-cell"><label class="rating-option val-3"><input type="radio" name="q10" value="3"><span class="score-circle">3</span></label></td>
+                <td class="score-cell"><label class="rating-option val-4"><input type="radio" name="q10" value="4"><span class="score-circle">4</span></label></td>
+              </tr>
+
+              <!-- Symptom 11 -->
+              <tr class="symptom-row" data-symptom="q11" data-group="mrs3">
+                <td class="symptom-title-cell">
+                  <span class="symptom-name">3/ Triệu chứng do khô âm đạo</span>
+                  <span class="symptom-desc">(cảm giác khô và nóng rát âm đạo, đau khi giao hợp)</span>
+                </td>
+                <td class="score-cell"><label class="rating-option val-0"><input type="radio" name="q11" value="0"><span class="score-circle">0</span></label></td>
+                <td class="score-cell"><label class="rating-option val-1"><input type="radio" name="q11" value="1"><span class="score-circle">1</span></label></td>
+                <td class="score-cell"><label class="rating-option val-2"><input type="radio" name="q11" value="2"><span class="score-circle">2</span></label></td>
+                <td class="score-cell"><label class="rating-option val-3"><input type="radio" name="q11" value="3"><span class="score-circle">3</span></label></td>
+                <td class="score-cell"><label class="rating-option val-4"><input type="radio" name="q11" value="4"><span class="score-circle">4</span></label></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </form>
+
+      <!-- ================= SUMMARY CALCULATION BOX (Bottom layout) ================= -->
+      <div class="summary-section">
+        <div class="summary-left">
+          <div class="summary-header">SỐ ĐIỂM TỪNG NHÓM TRIỆU CHỨNG</div>
+          <div class="summary-items">
+            <div class="summary-item">
+              <span class="summary-label">1/ Nhóm triệu chứng tâm lý, MRS1 =</span>
+              <span class="summary-val" id="score-mrs1">0</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">2/ Nhóm triệu chứng rối loạn thần kinh thực vật, MRS2 =</span>
+              <span class="summary-val" id="score-mrs2">0</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">3/ Nhóm triệu chứng niệu dục, MRS3 =</span>
+              <span class="summary-val" id="score-mrs3">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-right">
+          <div class="summary-header" style="text-align: center;">TỔNG SỐ ĐIỂM MRS</div>
+          <div class="summary-right-content">
+            <div class="total-score-badge" id="score-total">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Footer (Screen only) -->
+      <div class="sheet-action-footer">
+        <div class="footer-left">
+          <button type="button" class="btn btn-outline" onclick="resetForm()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+              <path d="M21 3v5h-5"></path>
+              <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+              <path d="M3 21v-5h5"></path>
+            </svg>
+            <span>Làm mới phiếu</span>
+          </button>
+        </div>
+
+        <div class="footer-right">
+          <button type="button" class="btn btn-teal" onclick="saveRecord()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            <span>Hoàn tất đánh giá</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ==========================================================================
+     HISTORY MODAL (Offline Storage for iPad)
+     ========================================================================== -->
+<div class="modal-overlay" id="history-modal" onclick="handleModalOverlayClick(event)">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Lịch sử đánh giá MRS trên thiết bị này</span>
+      </div>
+      <button type="button" class="modal-close" onclick="closeHistoryModal()" aria-label="Đóng">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="search-filter-box">
+        <input type="text" id="history-search" class="search-input" placeholder="Tìm theo tên bệnh nhân hoặc ngày..." oninput="renderHistoryList()">
+      </div>
+
+      <div class="history-list" id="history-list-container">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <div style="font-size: 0.8rem; color: var(--text-muted);">
+        Dữ liệu lưu an toàn trên iPad (LocalStorage)
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="btn btn-outline" style="font-size: 0.82rem; padding: 6px 12px;" onclick="exportHistoryJSON()">
+          Xuất dữ liệu (.json)
+        </button>
+        <button type="button" class="btn btn-outline" style="font-size: 0.82rem; padding: 6px 12px; color: #ad2b2b;" onclick="clearAllHistory()">
+          Xoá tất cả
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ==========================================================================
+     JAVASCRIPT LOGIC
+     ========================================================================== -->
+<script>
+  // MRS State Definition
+  const MRS_CONFIG = {
+    groups: {
+      mrs1: ['q1', 'q2', 'q3', 'q4'],    // Psychological (4 items)
+      mrs2: ['q5', 'q6', 'q7', 'q8'],    // Somato-vegetative (4 items)
+      mrs3: ['q9', 'q10', 'q11']         // Urogenital (3 items)
+    },
+    totalQuestions: 11,
+    storageKey: 'MRS_EVALUATION_RECORDS_V1'
+  };
+
+  // State object
+  let currentState = {
+    name: '',
+    birthYear: '',
+    date: '',
+    scores: {},
+    mrs1: 0,
+    mrs2: 0,
+    mrs3: 0,
+    total: 0,
+    severity: 'none'
+  };
+
+  // Initialize on DOM load
+  document.addEventListener('DOMContentLoaded', () => {
+    // Set default date to today
+    const dateInput = document.getElementById('eval-date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+    currentState.date = today;
+
+    // Listen to form radio changes
+    const form = document.getElementById('mrs-form');
+    form.addEventListener('change', handleRadioChange);
+
+    // Patient info inputs
+    document.getElementById('patient-name').addEventListener('input', (e) => {
+      currentState.name = e.target.value.trim();
+    });
+    document.getElementById('patient-birthyear').addEventListener('input', (e) => {
+      currentState.birthYear = e.target.value.trim();
+    });
+    document.getElementById('eval-date').addEventListener('change', (e) => {
+      currentState.date = e.target.value;
+    });
+
+    // Action buttons
+    document.getElementById('btn-save-record').addEventListener('click', saveRecord);
+    document.getElementById('btn-open-history').addEventListener('click', openHistoryModal);
+    // Update history badge count
+    updateHistoryBadge();
+
+    // Initial calculation
+    calculateScores();
+  });
+
+  // Handle radio option change
+  function handleRadioChange(e) {
+    if (e.target && e.target.type === 'radio') {
+      const qName = e.target.name;
+      const qValue = parseInt(e.target.value, 10);
+      currentState.scores[qName] = qValue;
+
+      // Highlight parent row
+      const row = e.target.closest('.symptom-row');
+      if (row) {
+        row.classList.add('is-answered');
+      }
+
+      calculateScores();
+    }
+  }
+
+  // Calculate scores real-time
+  function calculateScores() {
+    let mrs1 = 0;
+    let mrs2 = 0;
+    let mrs3 = 0;
+    let answeredCount = 0;
+
+    // Sum MRS1
+    MRS_CONFIG.groups.mrs1.forEach(q => {
+      if (currentState.scores[q] !== undefined) {
+        mrs1 += currentState.scores[q];
+        answeredCount++;
+      }
+    });
+
+    // Sum MRS2
+    MRS_CONFIG.groups.mrs2.forEach(q => {
+      if (currentState.scores[q] !== undefined) {
+        mrs2 += currentState.scores[q];
+        answeredCount++;
+      }
+    });
+
+    // Sum MRS3
+    MRS_CONFIG.groups.mrs3.forEach(q => {
+      if (currentState.scores[q] !== undefined) {
+        mrs3 += currentState.scores[q];
+        answeredCount++;
+      }
+    });
+
+    const total = mrs1 + mrs2 + mrs3;
+
+    currentState.mrs1 = mrs1;
+    currentState.mrs2 = mrs2;
+    currentState.mrs3 = mrs3;
+    currentState.total = total;
+
+    // Update DOM counters
+    document.getElementById('score-mrs1').textContent = mrs1;
+    document.getElementById('score-mrs2').textContent = mrs2;
+    document.getElementById('score-mrs3').textContent = mrs3;
+    document.getElementById('score-total').textContent = total;
+    document.getElementById('answered-counter').textContent = `Đã trả lời: ${answeredCount}/${MRS_CONFIG.totalQuestions}`;
+
+    // Calculate severity classification for stored records
+    if (total <= 4) {
+      currentState.severity = 'Không / Rất nhẹ';
+    } else if (total <= 8) {
+      currentState.severity = 'Nhẹ';
+    } else if (total <= 16) {
+      currentState.severity = 'Trung bình';
+    } else {
+      currentState.severity = 'Nặng';
+    }
+  }
+
+  // Reset entire form
+  function resetForm() {
+    if (Object.keys(currentState.scores).length > 0 || currentState.name) {
+      if (!confirm('Bạn có chắc muốn đặt lại toàn bộ biểu mẫu đánh giá?')) {
+        return;
+      }
+    }
+    document.getElementById('mrs-form').reset();
+    document.getElementById('patient-name').value = '';
+    document.getElementById('patient-birthyear').value = '';
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('eval-date').value = today;
+
+    document.querySelectorAll('.symptom-row').forEach(r => r.classList.remove('is-answered'));
+
+    currentState = {
+      name: '',
+      birthYear: '',
+      date: today,
+      scores: {},
+      mrs1: 0,
+      mrs2: 0,
+      mrs3: 0,
+      total: 0,
+      severity: 'none'
+    };
+
+    calculateScores();
+    showToast('Đã làm mới biểu mẫu');
+  }
+
+  // ==========================================================================
+  // LOCALSTORAGE MANAGEMENT (For iPad and offline use)
+  // ==========================================================================
+  function getStoredRecords() {
+    try {
+      const data = localStorage.getItem(MRS_CONFIG.storageKey);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      console.error('LocalStorage error:', e);
+      return [];
+    }
+  }
+
+  function setStoredRecords(records) {
+    try {
+      localStorage.setItem(MRS_CONFIG.storageKey, JSON.stringify(records));
+      updateHistoryBadge();
+    } catch (e) {
+      console.error('LocalStorage write error:', e);
+      alert('Không thể ghi vào bộ nhớ thiết bị. Vui lòng kiểm tra dung lượng.');
+    }
+  }
+
+  function updateHistoryBadge() {
+    const records = getStoredRecords();
+    const countEl = document.getElementById('history-count');
+    if (countEl) countEl.textContent = records.length;
+  }
+
+  // Save current record to iPad localStorage
+  function saveRecord() {
+    const patientName = document.getElementById('patient-name').value.trim();
+    const patientBirthYear = document.getElementById('patient-birthyear').value.trim();
+    const evalDate = document.getElementById('eval-date').value;
+
+    const answeredCount = Object.keys(currentState.scores).length;
+    if (answeredCount < MRS_CONFIG.totalQuestions) {
+      const remaining = MRS_CONFIG.totalQuestions - answeredCount;
+      const proceed = confirm(`Còn ${remaining} câu hỏi chưa được chọn (sẽ mặc định hiểu là 0 - không có triệu chứng). Bạn có muốn tiếp tục lưu?`);
+      if (!proceed) return;
+
+      // Fill remaining with 0
+      for (let i = 1; i <= MRS_CONFIG.totalQuestions; i++) {
+        const q = 'q' + i;
+        if (currentState.scores[q] === undefined) {
+          currentState.scores[q] = 0;
+          const radio = document.querySelector(`input[name="${q}"][value="0"]`);
+          if (radio) radio.checked = true;
+        }
+      }
+      calculateScores();
+    }
+
+    const record = {
+      id: 'mrs_' + Date.now(),
+      createdAt: new Date().toISOString(),
+      name: patientName || 'Chưa đặt tên',
+      birthYear: patientBirthYear || '--',
+      date: evalDate || new Date().toISOString().split('T')[0],
+      scores: { ...currentState.scores },
+      mrs1: currentState.mrs1,
+      mrs2: currentState.mrs2,
+      mrs3: currentState.mrs3,
+      total: currentState.total,
+      severity: currentState.severity
+    };
+
+    const records = getStoredRecords();
+    records.unshift(record); // newest first
+    setStoredRecords(records);
+
+    showToast(`Đã hoàn tất đánh giá cho "${record.name}" thành công!`);
+  }
+
+  // Open History Modal
+  function openHistoryModal() {
+    const modal = document.getElementById('history-modal');
+    modal.classList.add('active');
+    renderHistoryList();
+  }
+
+  // Close History Modal
+  function closeHistoryModal() {
+    const modal = document.getElementById('history-modal');
+    modal.classList.remove('active');
+  }
+
+  function handleModalOverlayClick(e) {
+    if (e.target.id === 'history-modal') {
+      closeHistoryModal();
+    }
+  }
+
+  // Render History List
+  function renderHistoryList() {
+    const container = document.getElementById('history-list-container');
+    const query = (document.getElementById('history-search').value || '').toLowerCase().trim();
+    const records = getStoredRecords();
+
+    if (records.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <div style="font-weight: 600; margin-bottom: 4px;">Chưa có lịch sử đánh giá</div>
+          <div style="font-size: 0.85rem;">Các kết quả sau khi bấm "Hoàn tất đánh giá" sẽ hiển thị tại đây để bạn xem lại bất cứ lúc nào.</div>
+        </div>
+      `;
+      return;
+    }
+
+    const filtered = records.filter(r => {
+      const nameMatch = r.name.toLowerCase().includes(query);
+      const dateMatch = (r.date || '').includes(query);
+      return nameMatch || dateMatch;
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div style="font-weight: 600;">Không tìm thấy kết quả phù hợp</div>
+          <div style="font-size: 0.85rem; margin-top: 4px;">Thử tìm kiếm với từ khóa khác.</div>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = filtered.map(r => {
+      const formattedDate = r.date ? r.date.split('-').reverse().join('/') : '--';
+      const yearText = (r.birthYear && r.birthYear !== '--') ? `(Năm sinh: ${r.birthYear})` : (r.age && r.age !== '--' ? `(${r.age} tuổi)` : '');
+      return `
+        <div class="history-card">
+          <div style="flex: 1;">
+            <div class="history-info-main">
+              <span>${escapeHtml(r.name)}</span>
+              <span style="font-size: 0.82rem; font-weight: normal; color: var(--text-muted);">${yearText}</span>
+            </div>
+            <div class="history-info-meta">
+              <span>📅 Ngày đánh giá: ${formattedDate}</span> • 
+              <span style="font-weight: 600; color: ${getSeverityColor(r.total)}">${r.severity || ''}</span>
+            </div>
+            <div class="history-scores">
+              MRS1: <strong>${r.mrs1}</strong> | MRS2: <strong>${r.mrs2}</strong> | MRS3: <strong>${r.mrs3}</strong> | Tổng: <strong>${r.total} điểm</strong>
+            </div>
+          </div>
+
+          <div class="history-actions">
+            <button type="button" class="btn btn-outline" style="padding: 6px 10px; font-size: 0.82rem;" onclick="loadRecord('${r.id}')" title="Xem lại phiếu này">
+              Mở lại
+            </button>
+            <button type="button" class="btn btn-outline" style="padding: 6px 8px; font-size: 0.82rem; color: #ad2b2b;" onclick="deleteRecord('${r.id}')" title="Xoá">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Load a saved record back into the active form
+  function loadRecord(id) {
+    const records = getStoredRecords();
+    const record = records.find(r => r.id === id);
+    if (!record) return;
+
+    if (confirm(`Bạn muốn tải lại dữ liệu đánh giá của bệnh nhân "${record.name}"?`)) {
+      document.getElementById('patient-name').value = record.name === 'Chưa đặt tên' ? '' : record.name;
+      const bYear = (record.birthYear && record.birthYear !== '--') ? record.birthYear : (record.age && record.age !== '--' ? record.age : '');
+      document.getElementById('patient-birthyear').value = bYear;
+      document.getElementById('eval-date').value = record.date || new Date().toISOString().split('T')[0];
+
+      // Reset and set radio checks
+      document.querySelectorAll('.symptom-row').forEach(r => r.classList.remove('is-answered'));
+      currentState.scores = { ...record.scores };
+
+      for (let i = 1; i <= MRS_CONFIG.totalQuestions; i++) {
+        const q = 'q' + i;
+        const val = record.scores[q];
+        if (val !== undefined) {
+          const radio = document.querySelector(`input[name="${q}"][value="${val}"]`);
+          if (radio) {
+            radio.checked = true;
+            const row = document.querySelector(`.symptom-row[data-symptom="${q}"]`);
+            if (row) row.classList.add('is-answered');
+          }
+        }
+      }
+
+      currentState.name = record.name;
+      currentState.birthYear = bYear;
+      currentState.date = record.date;
+
+      calculateScores();
+      closeHistoryModal();
+      showToast(`Đã tải lại hồ sơ: ${record.name}`);
+    }
+  }
+
+  // Delete a single record
+  function deleteRecord(id) {
+    if (confirm('Bạn có chắc muốn xoá bản ghi đánh giá này?')) {
+      let records = getStoredRecords();
+      records = records.filter(r => r.id !== id);
+      setStoredRecords(records);
+      renderHistoryList();
+      showToast('Đã xoá bản ghi');
+    }
+  }
+
+  // Clear all history
+  function clearAllHistory() {
+    if (confirm('CẢNH BÁO: Thao tác này sẽ xoá toàn bộ lịch sử các lần đánh giá đã lưu trên iPad này. Bạn có chắc chắn?')) {
+      localStorage.removeItem(MRS_CONFIG.storageKey);
+      updateHistoryBadge();
+      renderHistoryList();
+      showToast('Đã xoá toàn bộ lịch sử');
+    }
+  }
+
+  // Export history as JSON
+  function exportHistoryJSON() {
+    const records = getStoredRecords();
+    if (records.length === 0) {
+      alert('Chưa có dữ liệu nào để xuất.');
+      return;
+    }
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `mrs_history_${new Date().toISOString().split('T')[0]}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  }
+
+  // Toast notification helper
+  function showToast(message) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#368f91" stroke-width="2.5">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span>${escapeHtml(message)}</span>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(10px)';
+      toast.style.transition = 'all 0.3s ease';
+      setTimeout(() => toast.remove(), 300);
+    }, 3200);
+  }
+
+  function getSeverityColor(total) {
+    if (total <= 4) return '#2ca5a7';
+    if (total <= 8) return '#27794e';
+    if (total <= 16) return '#b46b1a';
+    return '#af2b1d';
+  }
+
+  function escapeHtml(text) {
+    if (!text) return '';
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+</script>
+
+</body>
+</html>
